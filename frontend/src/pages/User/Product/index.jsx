@@ -502,7 +502,7 @@ function Product() {
               SẢN PHẨM TƯƠNG TỰ
             </div>
             <div className="related-products__body">
-              <div className="related-product">
+              <Link to={`/san-pham./1`} className="related-product">
                 <img
                   src="https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lm7427ucy50ffd.webp"
                   alt=""
@@ -525,29 +525,14 @@ function Product() {
                     </div>
                   </div>
                 </div>
-              </div>
-              {/* <div className="related-product">
-                <img
-                  src="https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lm7427ucy50ffd.webp"
-                  alt=""
-                  className="related-product__image"
-                />
-                <div className="related-product__main">
-                  <div className="related-product__name">
-                    Áo Sơ Mi Denim Nam Dekace Cao Cấp Vải Dày Co Giãn SMDE
-                  </div>
-                  <div className="related-product__price">
-                    230.300đ
-                  </div>
-                </div>
-              </div> */}
+              </Link>
             </div>
 
-            <div style={{ textAlign: "center" }}>
+            {/* <div style={{ textAlign: "center" }}>
               <button className="related-products__btn">
                 Xem thêm
               </button>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

@@ -193,7 +193,7 @@ function Home() {
               GỢI Ý HÔM NAY
             </div>
             <div className="recommend__list">
-              <a href="/" className="recommend__item">
+              <Link to="/" className="recommend__item">
                 <img src="https://salt.tikicdn.com/cache/750x750/ts/product/55/d8/59/6ab171f91b1f5cddb98696a937f88ac5.jpg.webp" alt="" className="recommend__item__image" />
                 <div className="recommend__item__info">
                   {/* <div className="recommend__item__rating">
@@ -212,11 +212,12 @@ function Home() {
                     </div>
                   </div>
                 </div>
-              </a>
+              </Link>
+              
             </div>
           </div>
 
-          <button className="button">Xem thêm</button>
+          {/* <button className="button">Xem thêm</button> */}
         </div>
       </div>
     </>
