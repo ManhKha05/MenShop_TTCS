@@ -1,0 +1,23 @@
+.product-table {
+
+  &__image {
+    height: 60px;
+  }
+
+  &__action {
+    display: flex;
+    gap: 6px;
+  }
+
+  &__btn {
+    border: 1px solid #ddd;
+    padding: 3px 8px;
+    border-radius: 6px;
+    margin-bottom: 6px;
+  }
+
+}
+
+.ant-tag {
+  font-size: 14px;
+}

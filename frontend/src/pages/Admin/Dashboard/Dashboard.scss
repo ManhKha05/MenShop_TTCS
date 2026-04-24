@@ -1,0 +1,166 @@
+.dashboard-admin {
+  padding: 24px;
+  background: #f5f7fb;
+  min-height: 100vh;
+  padding-top: 0;
+
+  &--loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+
+  &__title {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 700;
+    color: #101828;
+  }
+
+  &__subtitle {
+    margin-top: 6px;
+    color: #667085;
+    font-size: 14px;
+  }
+
+  &__actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  &__stat-card,
+  &__chart-card,
+  &__alert-card,
+  &__quick-card,
+  &__performance-card,
+  &__shop-card,
+  &__activity-card {
+    border-radius: 18px;
+    box-shadow: 0 8px 30px rgba(15, 23, 42, 0.06);
+    border: none;
+  }
+
+  &__growth {
+    margin-top: 8px;
+    font-size: 13px;
+    color: #667085;
+
+    &.positive {
+      color: #16a34a;
+      font-weight: 600;
+    }
+  }
+
+  &__alert-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 16px;
+    border-radius: 12px;
+    background: #f8fafc;
+    margin-bottom: 12px;
+    font-size: 14px;
+
+    strong {
+      font-size: 18px;
+    }
+
+    &.danger {
+      background: #fff1f0;
+      color: #cf1322;
+    }
+
+    &.warning {
+      background: #fffbe6;
+      color: #d48806;
+    }
+
+    &.orange {
+      background: #fff7e6;
+      color: #d46b08;
+    }
+  }
+
+  &__quick-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  &__quick-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 56px;
+    padding: 12px;
+    text-align: center;
+    border-radius: 14px;
+    // background: linear-gradient(135deg, #eef4ff, #f8fbff);
+    color: #1677ff;
+    font-weight: 600;
+    text-decoration: none;
+    transition: 0.2s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+      background: #e6f4ff;
+      color: #0958d9;
+    }
+  }
+
+  &__performance-item {
+    margin-bottom: 18px;
+  }
+
+  &__performance-label {
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #344054;
+  }
+
+  &__shop-list {
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  &__shop-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 14px;
+    border-radius: 12px;
+    background: #f8fafc;
+  }
+
+  &__shop-name {
+    font-weight: 700;
+    color: #101828;
+  }
+
+  &__shop-meta {
+    font-size: 13px;
+    color: #667085;
+    margin-top: 4px;
+  }
+
+  &__shop-revenue {
+    font-weight: 700;
+    color: #1677ff;
+  }
+}
+
+.mt16 {
+  margin-top: 16px;
+}

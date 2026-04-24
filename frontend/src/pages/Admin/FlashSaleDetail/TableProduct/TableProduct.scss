@@ -1,0 +1,47 @@
+.tableproduct-admin {
+
+  .info {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    width: 100%;
+  }
+
+  .thumbnail {
+    height: 60px;
+    aspect-ratio: 1/1;
+    object-fit: contain;
+    border-radius: 4px;
+  }
+
+  .name {
+    font-size: 16px;
+    font-weight: 600;
+    flex: 1;
+  }
+
+  .original-price {
+    font-size: 16px;
+    letter-spacing: 1px;
+    font-weight: 500;
+    color: #000000ab;
+    text-decoration: line-through;
+  }
+
+  .sale-price {
+    font-size: 18px;
+    color: blue;
+    font-weight: 600;
+    letter-spacing: 1px;
+  }
+
+  .sale-rate {
+    font-weight: 500;
+    background-color: bisque;
+    display: inline-block;
+    color: brown;
+    padding: 2px 5px;
+    font-size: 12px;
+    border-radius: 5px;
+  }
+}

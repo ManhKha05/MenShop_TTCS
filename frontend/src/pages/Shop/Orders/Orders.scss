@@ -1,0 +1,66 @@
+.orders-shop {
+
+  &__stats {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+  }
+
+  &__stat {
+    background-color: #fff;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    padding: 15px;
+    width: 100%;
+
+    &__icon {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      border-radius: 4px;
+    }
+
+    &__title {
+      font-size: 16px;
+      font-weight: 500;
+      color: #000000a1;
+      margin-top: 10px;
+    }
+
+    &__value {
+      font-size: 28px;
+      font-weight: 700;
+      margin-top: 6px;
+    }
+  }
+
+  &__filter {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: 20px;
+    box-shadow: rgba(99, 99, 99, 0.1) 0px 2px 8px 0px;
+
+    &__form {
+      display: flex;
+      align-items: end;
+      gap: 20px;
+
+      .ant-form-item {
+        margin: 0;
+      }
+    }
+  }
+
+  &__table {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-top: 30px;
+    // padding: 15px;
+    box-shadow: rgba(99, 99, 99, 0.1) 0px 2px 8px 0px;
+  }
+}

@@ -1,0 +1,90 @@
+.banners-admin {
+
+  &__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    &__item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+
+      &__title {
+        font-size: 18px;
+        font-weight: 600;
+        opacity: 0.8;
+      }
+
+      &__value {
+        font-size: 26px;
+        font-weight: 700;
+        color: blue;
+      }
+    }
+  }
+
+  &__btn {
+    font-size: 17px;
+    font-weight: 600;
+    padding: 20px 25px;
+  }
+
+  &__filter {
+    margin-top: 20px;
+    display: flex;
+    gap: 30px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 8px;
+  }
+
+  &__content {
+    background-color: #fff;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-top: 20px;
+    display: flex;
+    // justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  &__item {
+    border: 1px solid rgba(0, 0, 255, 0.26);
+    border-radius: 8px;
+    padding: 15px;
+    width: calc(100% / 3 - 10px);
+
+    &__image {
+      width: 100%;
+    }
+
+    &__title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-top: 6px;
+    }
+
+    &__create {
+      font-size: 16px;
+      margin: 5px 0;
+    }
+
+    &__status {
+      font-size: 16px;
+      margin-bottom: 10px;
+
+      span {
+        margin-left: 5px;
+      }
+    }
+  }
+
+  &__pagination {
+    width: 100%;
+    margin-top: 15px;
+  }
+}

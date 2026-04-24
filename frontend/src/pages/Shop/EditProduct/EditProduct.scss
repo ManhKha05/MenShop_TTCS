@@ -1,0 +1,333 @@
+.edit-product {
+
+  .title {
+    font-size: 26px;
+    font-weight: 700;
+  }
+
+  .box {
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin: 20px 0;
+
+    &__header {
+      display: flex;
+      align-items: center;
+      font-size: 16px;
+      font-weight: 500;
+      gap: 10px;
+      margin-bottom: 15px;
+
+      &__icon {
+        font-size: 22px;
+        color: blue;
+      }
+    }
+  }
+
+  .ant-upload-wrapper .ant-upload-list-picture-card-container {
+    width: 180px !important;
+    height: 180px !important;
+  }
+
+  .ant-upload-wrapper .ant-upload.ant-upload-select {
+    width: 180px !important;
+    height: 180px !important;
+  }
+
+  .ant-upload-list-item {
+    border-radius: 12px !important;
+  }
+
+  .ant-upload-list-item-thumbnail img {
+    object-fit: cover;
+    border-radius: 12px;
+  }
+
+  .ant-upload-wrapper .ant-upload-list-item-container {
+    width: 180px !important;
+    height: 180px !important;
+  }
+
+
+  /* Container chính của Box */
+  .box {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+    padding: 24px;
+    border: 1px solid #f0f0f0;
+  }
+
+  /* Phần Header */
+  .box__header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .box__header__icon {
+    color: #1677ff;
+    /* Màu xanh đặc trưng của AntD hoặc màu thương hiệu của bạn */
+    font-size: 20px;
+  }
+
+  .box__header__title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1f2937;
+  }
+
+  /* Tùy chỉnh Label của Ant Design */
+  .ant-form-item-label>label {
+    font-weight: 600 !important;
+    color: #4b5563 !important;
+    letter-spacing: 0.5px;
+  }
+
+  /* Tùy chỉnh các ô Input, Select, Textarea */
+  .ant-input,
+  .ant-input-number,
+  .ant-select-selector {
+    border-radius: 8px !important;
+    background-color: #f9fafb !important;
+    /* Màu xám nhạt */
+    border: 1px solid #e5e7eb !important;
+    transition: all 0.3s ease;
+  }
+
+  /* Hiệu ứng khi focus (nhấp chuột vào) ô nhập liệu */
+  .ant-input:focus,
+  .ant-input:hover,
+  .ant-input-number-focused,
+  .ant-input-number:hover,
+  .ant-select:hover .ant-select-selector,
+  .ant-select-focused .ant-select-selector {
+    background-color: #ffffff !important;
+    border-color: #1677ff !important;
+    box-shadow: 0 0 0 3px rgba(22, 119, 255, 0.1) !important;
+  }
+
+  /* Chỉnh padding cho textarea */
+  textarea.ant-input {
+    padding: 12px !important;
+  }
+
+
+  .variant__header {
+    display: flex;
+    justify-content: space-between !important;
+    /* Đẩy nút Thêm sang phải */
+    align-items: center;
+    border-bottom: none;
+    /* Bỏ gạch chân nếu muốn giống ảnh */
+  }
+
+  .box__header__left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  /* Nút Thêm biến thể */
+  .btn-add-variant {
+    background-color: #eff6ff !important;
+    /* Xanh nhạt */
+    color: #1677ff !important;
+    border: none !important;
+    border-radius: 6px !important;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .btn-add-variant:hover {
+    background-color: #dbeafe !important;
+  }
+
+  /* Cấu trúc Bảng Biến Thể dùng CSS Grid */
+  .variant-table {
+    width: 100%;
+    border: 1px solid #f0f0f0;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .variant-table__head {
+    display: grid;
+    grid-template-columns: 3fr 80px 1.5fr 50px;
+    gap: 16px;
+    background-color: #f8fafc;
+    padding: 12px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #64748b;
+    letter-spacing: 0.5px;
+  }
+
+  .variant-table__row {
+    display: grid;
+    grid-template-columns: 3fr 80px 1.5fr 50px;
+    gap: 16px;
+    align-items: center;
+    padding: 8px 16px;
+    border-bottom: 1px solid #f0f0f0;
+    transition: background 0.2s ease;
+    gap: 20px;
+  }
+
+  .variant-table__row:last-child {
+    border-bottom: none;
+  }
+
+  .variant-table__row:hover {
+    background-color: #f8fafc;
+  }
+
+  /* Tùy chỉnh Input bên trong bảng */
+  .variant-input {
+    font-size: 14px;
+    color: #1e293b;
+    padding: 4px 8px !important;
+    border-radius: 4px;
+  }
+
+  .variant-input:hover,
+  .variant-input:focus {
+    background-color: #ffffff;
+    box-shadow: 0 0 0 1px #e2e8f0;
+  }
+
+  /* Kích cỡ thường được làm dạng badge nho nhỏ */
+  .size-input {
+    background-color: #eef2ff;
+    color: #4f46e5;
+    font-weight: 500;
+    max-width: 60px;
+    text-align: center;
+  }
+
+  /* Nút Xóa */
+  .btn-delete {
+    background: none;
+    border: none;
+    color: #ef4444;
+    /* Màu đỏ */
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+  }
+
+  .btn-delete:hover {
+    background-color: #fee2e2;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 24px;
+    color: #94a3b8;
+    font-size: 14px;
+  }
+
+  .attribute-table {
+    width: 100%;
+    border: 1px solid #f0f0f0;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .attribute-table__head {
+    display: grid;
+    /* Chia tỷ lệ: Tên (1 phần) - Giá trị (2 phần) - Nút xóa (50px) */
+    grid-template-columns: 1.5fr 3fr 50px;
+    gap: 16px;
+    background-color: #f8fafc;
+    padding: 12px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #64748b;
+    letter-spacing: 0.5px;
+  }
+
+  .attribute-table__row {
+    display: grid;
+    /* Tỷ lệ cột bắt buộc phải giống hệt phần head */
+    grid-template-columns: 1.5fr 3fr 50px;
+    gap: 16px;
+    align-items: center;
+    padding: 8px 16px;
+    border-bottom: 1px solid #f0f0f0;
+    transition: background 0.2s ease;
+  }
+
+  .attribute-table__row:last-child {
+    border-bottom: none;
+  }
+
+  .attribute-table__row:hover {
+    background-color: #f8fafc;
+  }
+
+  /* Thanh chứa nút bấm */
+  .action-bar {
+    display: flex;
+    justify-content: flex-end;
+    /* Đẩy các nút sang phải */
+    align-items: center;
+    gap: 16px;
+    /* Khoảng cách giữa 2 nút */
+    padding: 16px 32px;
+    background-color: #f8fafc;
+    /* Màu nền nhạt giống trong ảnh */
+    border-top: 1px solid #e2e8f0;
+
+    /* Hiệu ứng dính chặt dưới đáy màn hình (Sticky Footer) */
+    position: sticky;
+    bottom: 0;
+    z-index: 100;
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.03);
+  }
+
+  /* Nút Lưu bản nháp */
+  .btn-draft {
+    color: #475569 !important;
+    font-weight: 500 !important;
+  }
+
+  .btn-draft:hover {
+    background-color: #f1f5f9 !important;
+    color: #1e293b !important;
+  }
+
+  /* Nút Đăng bán ngay */
+  .btn-publish {
+    background-color: #1d4ed8 !important;
+    /* Màu xanh đậm giống ảnh */
+    border-radius: 6px !important;
+    height: 40px !important;
+    padding: 0 24px !important;
+    font-weight: 600 !important;
+    box-shadow: 0 4px 10px rgba(29, 78, 216, 0.3) !important;
+    /* Đổ bóng nhẹ cho nút */
+    border: none !important;
+    transition: all 0.3s ease;
+  }
+
+  .btn-publish:hover {
+    background-color: #1e40af !important;
+    box-shadow: 0 6px 14px rgba(29, 78, 216, 0.4) !important;
+    transform: translateY(-1px);
+    /* Hiệu ứng nổi lên khi hover */
+  }
+}

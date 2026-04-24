@@ -1,0 +1,174 @@
+.layout-admin {
+
+  &__logo {
+    height: 60px;
+    border-bottom: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    img {
+      width: 60%;
+    }
+  }
+
+  &__header {
+    background-color: #fff;
+    border-bottom: 1px solid #ddd;
+    height: 60px;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 999;
+
+    &__title {
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+  }
+
+}
+
+.app-sider {
+  height: 100vh;
+  position: sticky !important;
+  top: 0;
+  overflow: hidden;
+  border-right: 1px solid #f0f0f0;
+
+  .ant-layout-sider-children {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+.app-sider__menu {
+  flex: 1;
+  padding-top: 20px;
+  font-size: 16px;
+  font-weight: 600;
+  border-inline-end: none !important;
+  overflow-y: auto;
+}
+
+.app-sider__user {
+  margin: 12px;
+  padding: 12px;
+  border-radius: 16px;
+  background: #ffffff;
+  border: 1px solid #edf0f5;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+  flex-shrink: 0;
+}
+
+.app-sider__profile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.app-sider__avatar {
+  flex-shrink: 0;
+  background: #405766;
+}
+
+.app-sider__info {
+  min-width: 0;
+  flex: 1;
+  text-align: left;
+}
+
+.app-sider__name {
+  font-size: 14px;
+  font-weight: 700;
+  color: #111827;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.app-sider__role {
+  margin-top: 3px;
+  font-size: 12px;
+  color: #6b7280;
+  line-height: 1.2;
+}
+
+.app-sider__logout {
+  height: 36px;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+.layout-admin__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.layout-admin__header__right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.layout-admin__notification {
+  // margin-right: 50px;
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  background: #fff;
+  border: 1px solid #edf0f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  color: #374151;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.06);
+  transition: all 0.2s ease;
+
+  &:hover {
+    color: #1677ff;
+    transform: translateY(-1px);
+  }
+}
+
+.admin-notification-item {
+  width: 320px;
+  padding: 6px 4px;
+  cursor: pointer;
+}
+
+.admin-notification-item__title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 4px;
+}
+
+.admin-notification-item__message {
+  font-size: 13px;
+  color: #4b5563;
+  white-space: normal;
+}
+
+.admin-notification-item__time {
+  margin-top: 6px;
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+.admin-notification-empty {
+  width: 260px;
+  padding: 12px;
+  color: #6b7280;
+  text-align: center;
+}

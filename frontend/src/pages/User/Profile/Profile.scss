@@ -1,0 +1,64 @@
+.profile {
+  background-color: #fff;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
+  padding: 30px 20px;
+  border-radius: 8px;
+
+  &__header {
+    padding-bottom: 20px;
+    border-bottom: 1px solid #ddd;
+
+    &__title {
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    &__subtitle {
+      font-size: 16px;
+      margin-top: 6px;
+      opacity: 0.7;
+    }
+  }
+
+  &__avt {
+    height: 105px;
+    border-radius: 50%;
+    border: 3px solid #ddd;
+    margin-right: 30px;
+  }
+
+  &__body {
+    padding: 20px 0;
+    display: flex;
+  }
+
+  &__form .ant-form-item-label>label {
+    font-family: "Be Vietnam Pro", sans-serif;
+    font-size: 15px;
+    opacity: 0.8;
+  }
+
+  .profile__form .ant-input {
+    font-size: 15px;
+    font-family: "Be Vietnam Pro", sans-serif;
+  }
+
+  &__avt-upload {
+
+    .ant-upload-select {
+      border-radius: 50% !important;
+      overflow: hidden;
+    }
+
+    .ant-upload-list-item {
+      border-radius: 50% !important;
+      overflow: hidden;
+    }
+
+    .ant-upload-list-item-thumbnail img {
+      border-radius: 50% !important;
+      object-fit: cover;
+    }
+  }
+
+}

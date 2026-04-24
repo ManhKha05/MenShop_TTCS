@@ -1,0 +1,50 @@
+.account-layout {
+  padding: 40px 0;
+
+  .container {
+    display: flex;
+    align-items: flex-start;
+    gap: 30px;
+  }
+
+  &__nav {
+    width: 250px;
+
+    &__item {
+      display: flex;
+      align-items: center;
+      font-size: 16px;
+      font-weight: 600;
+      color: #000000cc;
+      padding: 15px 20px;
+      margin-bottom: 10px;
+      border: none;
+      width: 100%;
+      background-color: transparent;
+      border-radius: 10px;
+      cursor: pointer;
+
+      &:hover {
+        background-color: #ddd;
+      }
+
+      &.active {
+        background-color: rgba(7, 7, 248, 0.726);
+        color: #fff;
+      }
+
+      svg {
+        font-size: 20px;
+        margin-right: 20px;
+      }
+    }
+  }
+
+  &__main {
+    // background-color: #fff;
+    flex: 1;
+    // padding: 30px 20px;
+    // border-radius: 8px;
+    // box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
+  }
+}

@@ -1,0 +1,18 @@
+.banner-edit {
+
+  &__title {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 15px;
+  }
+
+  .ant-form-item-label label {
+    font-size: 16px;
+  }
+
+  &__image {
+    width: 70%;
+    margin-right: 30%;
+    margin-bottom: 8px;
+  }
+}

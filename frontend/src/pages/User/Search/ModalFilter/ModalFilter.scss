@@ -1,0 +1,54 @@
+.modalfilter {
+
+  &__field {
+    border-bottom: 1px solid #ddd;
+    padding: 15px 0;
+    // padding-top: 0;
+  }
+
+  &__title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+
+  &__checkbox {
+    display: flex;
+    align-items: center;
+    margin-top: 5px;
+    font-size: 16px;
+
+    input {
+      margin: 0;
+    }
+
+    label {
+      margin-left: 8px;
+
+      svg {
+        color: rgb(255, 196, 0);
+
+        &.none {
+          color: rgb(221, 221, 227);
+        }
+      }
+
+      span {
+        display: inline-block;
+        margin-left: 10px;
+      }
+    }
+  }
+
+  &__price {
+    padding: 5.5px 12px;
+    border: 1px solid rgb(221, 221, 227);
+    border-radius: 16px;
+    background-color: #fff;
+    font-size: 15px;
+    margin: 0 8px 8px 0;
+    color: rgb(39, 39, 42);
+  }
+
+
+}

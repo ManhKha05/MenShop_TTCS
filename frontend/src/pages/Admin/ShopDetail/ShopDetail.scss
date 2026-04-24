@@ -1,0 +1,130 @@
+.admin-shop {
+
+  &__top {
+    padding: 20px;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    border-radius: 8px;
+    display: flex;
+    gap: 20px;
+
+    &__image {
+      height: 80px;
+      border-radius: 3px;
+    }
+
+    &__name {
+      font-size: 26px;
+      font-weight: 700;
+    }
+
+    &__info {
+      display: flex;
+      gap: 30px;
+    }
+
+    &__desc {
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 500;
+      color: #000000ab;
+      margin-top: 10px;
+    }
+
+    &__btn {
+      height: 40px;
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 600;
+      font-size: 15px;
+      border-radius: 6px;
+      cursor: pointer;
+
+      svg {
+        font-size: 16px;
+      }
+
+      &--approve {
+        color: #fff;
+        background-color: rgb(129, 129, 221);
+        border: 1.5px solid rgb(129, 129, 221);
+      }
+
+      &--lock {
+        color: #d80805;
+        background-color: #fdecea;
+        border: 1.5px solid #f5a3a3;
+
+        &:hover {
+          background-color: #fbd5d5;
+          border-color: #e57373;
+        }
+      }
+
+      &--unlock {
+        color: #2e7d32;
+        background: #dbf5db;
+        border: 1.5px solid #a5d6a7;
+
+        &:hover {
+          background: #dff3e0;
+        }
+      }
+    }
+  }
+
+  &__body {
+    margin-top: 20px;
+  }
+
+  &__info {
+    // padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fff;
+    overflow: hidden;
+
+    &__title {
+      font-size: 18px;
+      font-weight: 600;
+      background-color: #dddddd70;
+      padding: 15px 20px;
+    }
+  }
+
+  &__stat {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fff;
+    overflow: hidden;
+    height: 100%;
+
+    &__title {
+      font-size: 18px;
+      font-weight: 600;
+      background-color: #dddddd70;
+      padding: 15px 20px;
+    }
+
+    &__content {
+      padding: 10px 20px;
+    }
+  }
+
+  &__tab {
+    background-color: #fff;
+    margin-top: 30px;
+    padding: 20px;
+    padding-top: 10px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+
+    .ant-tabs-tab-btn {
+      font-size: 16px;
+    }
+  }
+}

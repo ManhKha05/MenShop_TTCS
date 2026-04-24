@@ -1,0 +1,22 @@
+.flashsale-shop {
+
+  .title {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 20px;
+  }
+
+  .filter {
+    background-color: #fff;
+    padding: 20px;
+    display: flex;
+    gap: 30px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    margin-bottom: 30px;
+
+    .ant-input-affix-wrapper {
+      width: 500px;
+    }
+  }
+}

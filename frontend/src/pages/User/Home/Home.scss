@@ -1,0 +1,257 @@
+.home {
+  background-color: #f6f6f8;
+  padding: 30px 0;
+  margin-top: 95px;
+
+  .ant-carousel .slick-dots li{
+    // width: 30px;
+    height: 6px;
+    background: #e5e5e5;
+    border-radius: 2px;
+    padding: 0 5px;
+    opacity: 1;
+
+    button::after {
+      display: none;
+    }
+  }
+
+  .ant-carousel .slick-dots li.slick-active  {
+    background: #1677ff;
+
+    &::after {
+      display: none;
+    }
+  }
+
+  &__banner {
+    display: flex;
+    gap: 15px;
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 10px;
+
+    &-one,
+    &-two {
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 20px;
+      width: 50%;
+
+      img {
+        width: 100%;
+        // aspect-ratio: 16/9;
+        object-fit: contain;
+      }
+    }
+  }
+
+  .category {
+    background-color: #fff;
+    margin: 20px 0;
+    padding: 10px;
+    display: flex;
+    gap: 30px;
+    border-radius: 10px;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+
+    &__item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 5px 15px;
+
+      &:hover {
+        background-color: rgba(39, 39, 42, 0.12);
+        border-radius: 10px;
+      }
+
+      img {
+        width: 80px;
+      }
+    }
+
+    &-icon {
+      margin-bottom: 10px;
+    }
+
+    &-label {
+      font-size: 16px;
+    }
+  }
+
+  .sale {
+    background-color: #e9f1ff75;
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid #bdd8e0;
+
+    &__header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+
+      &__content {
+        display: flex;
+        align-items: center;
+      }
+
+      &__title {
+        color: #135bec;
+        font-weight: 700;
+        font-size: 26px;
+        margin-right: 20px;
+
+      }
+
+      &__countdown {
+
+        &__text {
+          letter-spacing: 0.8px;
+          opacity: 0.7;
+          margin-right: 10px;
+        }
+
+        &__number {
+          background-color: rgb(255, 66, 78);
+          padding: 5px;
+          color: #fff;
+          font-weight: 600;
+          border-radius: 4px;
+          margin: 0 5px;
+        }
+      }
+
+      &__view-all {
+        color: #135bec
+      }
+    }
+
+    &__list {
+      display: flex;
+      gap: 15px;
+    }
+
+    &__item {
+      background-color: #fff;
+      padding: 12px;
+      border-radius: 8px;
+      width: 200px;
+      position: relative;
+
+      &__badge {
+        position: absolute;
+        background-color: rgb(255, 219, 222);
+        color: rgb(255, 66, 78);
+        font-weight: 700;
+        padding: 4px;
+        // font-size: 16px;
+        left: 5px;
+        top: 5px;
+        border-radius: 5px;
+      }
+
+      &__image {
+        width: 100%;
+        object-fit: contain;
+      }
+
+      &__title {
+        font-size: 13px;
+        margin-top: 6px;
+      }
+
+      &__price {
+        font-size: 16px;
+        color: rgb(216, 56, 56);
+        font-weight: 700;
+        margin: 8px 0 4px;
+
+        &--old {
+          font-size: 12px;
+          color: #808089;
+          text-decoration: line-through;
+        }
+      }
+    }
+  }
+
+  .recommend {
+    margin: 20px 0;
+
+    &__header {
+      background-color: #fff;
+      text-align: center;
+      color: #135bec;
+      padding: 20px 0;
+      font-weight: 600;
+      border-bottom: 3px solid #135bec;
+      position: sticky;
+      top: 95px;
+    }
+
+    &__list {
+      display: flex;
+      margin-top: 20px;
+    }
+
+    &__item {
+      width: calc(100% / 6 - 4px);
+      background-color: #fff;
+      border-radius: 6px;
+      border: 1px solid rgb(235, 235, 240);
+      overflow: hidden;
+
+      &:hover {
+        box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 20px;
+      }
+
+      &__image {
+        width: 100%;
+      }
+
+      &__info {
+        padding: 10px;
+      }
+
+      &__title {
+        // font-size: 13px;
+        font-weight: 400;
+      }
+
+      &__footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: end;
+        margin-top: 10px;
+        font-size: 13px;
+      }
+
+      &__price {
+        font-weight: 600;
+        font-size: 16px;
+      }
+
+      &__sold {
+        font-weight: 300;
+      }
+
+    }
+  }
+
+  .button {
+    border: 1px solid rgb(10, 104, 255);
+    color: rgb(10, 104, 255);
+    padding: 8px 12px;
+    width: 240px;
+    cursor: pointer;
+    display: block;
+    margin: 0 auto;
+    border-radius: 4px;
+    font-size: 16px;
+
+    &:hover {
+      background-color: rgba(0, 96, 255, 0.12)
+    }
+  }
+}

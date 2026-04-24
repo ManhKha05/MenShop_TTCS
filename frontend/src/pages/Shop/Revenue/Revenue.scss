@@ -1,0 +1,99 @@
+.shop-revenue {
+  padding: 24px;
+  background: #f5f7fb;
+  min-height: 100vh;
+  padding-top: 0;
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+
+  &__title {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 700;
+    color: #101828;
+  }
+
+  &__subtitle {
+    margin-top: 6px;
+    color: #667085;
+    font-size: 14px;
+  }
+
+  &__actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  &__loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 300px;
+  }
+
+  &__card {
+    border-radius: 18px;
+    border: none;
+    box-shadow: 0 8px 30px rgba(15, 23, 42, 0.06);
+  }
+
+  &__top-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  &__top-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    background: #f8fafc;
+  }
+
+  &__top-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+  }
+
+  &__top-image {
+    width: 56px;
+    height: 56px;
+    object-fit: cover;
+    border-radius: 10px;
+    flex-shrink: 0;
+  }
+
+  &__top-name {
+    font-weight: 700;
+    color: #101828;
+  }
+
+  &__top-meta {
+    margin-top: 4px;
+    font-size: 13px;
+    color: #667085;
+  }
+
+  &__top-revenue {
+    font-weight: 700;
+    color: #1677ff;
+    white-space: nowrap;
+  }
+}
+
+.mt16 {
+  margin-top: 16px;
+}

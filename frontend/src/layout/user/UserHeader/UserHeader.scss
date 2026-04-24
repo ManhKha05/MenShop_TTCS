@@ -1,0 +1,195 @@
+.user-header {
+  padding: 20px 0;
+  border-bottom: 1px solid rgb(235, 235, 240);
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
+  z-index: 999;
+  background-color: #fff;
+  height: 95px;
+
+  .container {
+    display: flex;
+    gap: 48px;
+    align-items: center;
+  }
+
+  &__logo {
+
+    img {
+      width: 150px;
+    }
+  }
+
+  &__content {
+    flex: 1;
+    display: flex;
+  }
+
+  &__content-top {
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__search {
+    border: 1px solid rgb(221, 221, 227);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    height: 40px;
+    position: relative;
+
+    svg {
+      font-size: 20px;
+      margin-left: 10px;
+      opacity: 0.6;
+    }
+
+    input {
+      border: none;
+      outline: none;
+      border-right: 1px solid rgb(221, 221, 227);
+      padding: 0 10px;
+      font-weight: 500;
+      width: 650px;
+    }
+
+    &__drop {
+      margin-top: 2px;
+      width: 100%;
+      // height: 200px;
+      background-color: #fff;
+      border-radius:  3px;
+      box-shadow: rgba(0, 0, 0, 0.28) 0px 6px 12px 0px;
+      border-top: 1px solid rgb(225, 225, 225);
+      position: absolute;
+      top: 100%;
+      overflow: hidden;
+
+      &__item {
+        font-size: 14px;
+        padding: 7px 10px;
+        display: flex;
+        align-items: center;
+
+        &:hover {
+          background-color: rgba(39, 39, 42, 0.12);
+        }
+
+        svg {
+          margin-right: 10px;
+          opacity: 0.5;
+        }
+      }
+    }
+
+    button {
+      border: none;
+      background-color: #fff;
+      padding: 10px 15px;
+      height: 100%;
+      cursor: pointer;
+      color: var(--color-one);
+      border-radius: 0 8px 8px 0;
+
+      &:hover {
+        background-color: rgba(10, 104, 255, 0.2);
+      }
+
+      &:active {
+        background-color: rgba(10, 104, 255, 0.4);
+      }
+    }
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    // opacity: 0.8;
+    padding: 5px 15px;
+    cursor: pointer;
+
+    &:hover {
+      background-color: rgba(39, 39, 42, 0.12);
+      border-radius: 8px;
+    }
+
+    &-icon {
+      font-size: 24px;
+      margin-right: 10px;
+    }
+
+    &__avatar {
+      height: 30px;
+      border-radius: 50%;
+      margin-right: 10px;
+    }
+  }
+
+  .account {
+    position: relative;
+
+    &__drop {
+      position: absolute;
+      top: 100%;
+      left: -20px;
+      width: 150px;
+      background: #fff;
+      box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+      z-index: 9999;
+      border-radius: 4px;
+      overflow: hidden;
+      
+      &__item {
+        padding: 10px 15px;
+
+        &:hover {
+          background-color: aliceblue;
+          color: #000000a1;
+        }
+      }
+
+      .logout {
+        background-color: transparent;
+        border: none;
+        width: 100%;
+        cursor: pointer;
+        text-align: start;
+        font-size: 14px;
+        padding: 0;
+        font-family: "Be Vietnam Pro", sans-serif;
+      }
+    }
+
+  }
+
+
+  &__cart {
+    display: flex;
+    align-items: center;
+    font-size: 26px;
+    color: var(--color-one);
+    border-left: 1px solid rgb(221, 221, 227);
+    padding-left: 30px;
+    position: relative;
+    cursor: pointer;
+
+    &__badge {
+      position: absolute;
+      top: -5px;
+      right: -10px;
+      background-color: rgb(255, 66, 79);
+      color: #fff;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      font-size: 14px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+
+}

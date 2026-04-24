@@ -1,0 +1,131 @@
+.admin-shops {
+
+  &__title {
+    font-size: 22px;
+    font-weight: 700;
+  }
+
+  &__stats {
+    display: flex;
+    justify-content: space-between;
+    gap: 30px;
+    margin: 30px 0;
+  }
+
+  &__stat {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    width: 100%;
+
+    &__title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #000000ab;
+    }
+
+    &__value {
+      font-size: 26px;
+      font-weight: 700;
+      margin-top: 6px;
+    }
+  }
+
+  &__filter {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  &__input {
+    display: flex;
+    align-items: center;
+    background-color: #f6f6f8bd;
+    padding: 8px 20px;
+    border-radius: 8px;
+    gap: 10px;
+    border: 1px solid #ddddddbb;
+
+    svg {
+      font-size: 20px;
+      opacity: 0.7;
+    }
+    
+    input {
+      width: 500px;
+      font-size: 15px;
+      border: none;
+      outline: none;
+      background-color: transparent;
+    }
+  }
+
+  &__status {
+    height: 100%;
+    background-color: #f6f6f8;
+    padding: 6px;
+
+    &:hover {
+      border: 1px solid #ddd;
+    }
+  }
+
+  &__table {
+    margin-top: 30px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fff;
+
+    &__image {
+      height: 50px;
+    }
+
+    .ant-tag {
+      font-size: 14px;
+    }
+
+    &__actions {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+
+      button {
+        cursor: pointer;
+        font-size: 15px;
+        background-color: transparent;
+        border: none;
+
+        &:hover {
+          transform: scale(1.1);
+        }
+
+        svg {
+          font-size: 22px;
+        }
+      }
+
+      .view {
+        background-color: transparent;
+        border: none;
+        color: var(--color-one);
+      }
+
+      .block {
+        
+      }
+
+      .unblock {
+        color: var(--color-one);
+
+        svg {
+          font-size: 24px;
+        }
+      }
+    }
+  }
+}

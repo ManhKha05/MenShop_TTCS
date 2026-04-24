@@ -1,0 +1,76 @@
+.shop-review {
+  padding: 20px;
+  padding-top: 0;
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 40px;
+  }
+
+  &__title {
+    font-size: 24px;
+    font-weight: 700;
+  }
+
+  &__filter {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    font-size: 16px;
+  }
+
+  &__item {
+    margin-bottom: 16px;
+    border-radius: 12px;
+  }
+
+  &__product-img {
+    width: 100%;
+    border-radius: 8px;
+  }
+
+  &__top {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__user {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+
+    .avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+    }
+  }
+
+  &__product {
+    font-weight: bold;
+    margin: 8px 0;
+    font-size: 18px;
+  }
+
+  &__content {
+    margin: 8px 0;
+    font-size: 16px;
+  }
+
+  &__images {
+    display: flex;
+    gap: 8px;
+
+    img {
+      // width: 90px;
+      height: 200px;
+      border-radius: 6px;
+    }
+  }
+
+  &__bottom {
+    margin-top: 10px;
+  }
+}

@@ -1,0 +1,272 @@
+.cart {
+  padding: 30px 0;
+
+  &__title {
+    font-size: 34px;
+    font-weight: 800;
+  }
+
+  &__subtitle {
+    margin: 10px 0;
+    font-size: 16px;
+    color: rgb(104, 103, 103);
+
+    span {
+      color: blue;
+      font-weight: 600;
+    }
+  }
+
+  .cart-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    text-align: center;
+    color: #333;
+
+    &__image {
+      width: 180px;
+      max-width: 50%;
+      margin-bottom: 30px;
+      opacity: 0.8;
+      transition: transform 0.3s ease;
+
+      &:hover {
+        transform: scale(1.05);
+      }
+    }
+
+    &__title {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    &__desc {
+      font-size: 16px;
+      margin-bottom: 25px;
+      color: #666;
+    }
+
+    &__btn {
+      display: inline-block;
+      padding: 12px 25px;
+      background-color: #ff8a3d; // màu cam nổi bật, phù hợp theme
+      color: #fff;
+      font-weight: 500;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: background 0.3s ease;
+
+      &:hover {
+        background-color: #ff6a1a;
+      }
+    }
+  }
+
+  &__body {
+    display: flex;
+    justify-content: space-between;
+    margin: 30px 0;
+    gap: 20px;
+  }
+
+  &__list {
+    width: 65%;
+
+  }
+
+  &-shop {
+    background-color: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    border: 1px solid #dddddd9d;
+
+    &__header {
+      background-color: #e4e2e294;
+      display: flex;
+      align-items: center;
+      padding: 15px;
+    }
+
+    &__name {
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    svg {
+      margin: 0 10px;
+      font-size: 22px;
+    }
+  }
+
+  &-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px;
+
+    &__image {
+      height: 80px;
+      margin-left: 20px;
+    }
+
+    &__info {
+      margin: 0 10px;
+    }
+
+    &__name {
+      font-weight: 600;
+      margin: 0;
+      margin-bottom: 5px;
+      font-size: 15px;
+      width: 300px;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      overflow: hidden;
+    }
+
+    &__variant {
+      opacity: 0.7;
+    }
+
+    &__sold-out {
+      font-size: 16px;
+      width: 340px;
+      text-align: center;
+    }
+
+    &__price {
+      font-weight: 600;
+      margin: 0 10px;
+    }
+
+    &__quantity {
+      margin: 0 20px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      overflow: hidden;
+
+      &-btn {
+        height: 40px;
+        width: 40px;
+        border: none;
+        background-color: #fff;
+        cursor: pointer;
+        font-size: 18px;
+
+        &:hover {
+          background-color: #e0d2f3;
+        }
+      }
+
+      &-input {
+        height: 35px;
+        width: 35px;
+        border: none;
+        outline: none;
+        font-size: 16px;
+        text-align: center;
+        border-left: 1px solid #c5ddec;
+        border-right: 1px solid #c5ddec;
+
+        &::-webkit-inner-spin-button {
+          -webkit-appearance: none;
+        }
+      }
+
+    }
+
+    &__total {
+      color: rgb(69, 69, 250);
+      font-weight: 700;
+    }
+
+    &__remove {
+      background-color: #fff;
+      border: none;
+      cursor: pointer;
+      opacity: 0.6;
+    }
+
+  }
+
+  &-summary {
+    flex: 1;
+    background-color: #fff;
+    border-radius: 10px;
+    border: 1px solid #dddddd9d;
+    padding: 20px;
+    height: 320px;
+    position: sticky;
+    top: 105px;
+
+    &__title {
+      margin-top: 0;
+    }
+
+    &__row {
+      display: flex;
+      justify-content: space-between;
+      margin: 10px 0;
+      color: #000000b7;
+    }
+
+    &__value {
+      color: #000;
+      font-weight: 500;
+
+      &--discount {
+        color: red;
+      }
+    }
+
+    &__total {
+      margin-top: 20px;
+      padding: 20px 0;
+      border-top: 1px solid #ddd;
+      display: flex;
+      justify-content: space-between;
+
+      &-title {
+        font-weight: 700;
+        font-size: 17px;
+      }
+
+      &-content {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+      }
+
+      &-price {
+        margin: 0;
+        color: blue;
+      }
+
+      &-desc {
+        font-size: 12px;
+        opacity: 0.6;
+      }
+    }
+
+    &__buy {
+      display: block;
+      width: 100%;
+      padding: 15px 0;
+      background-color: rgba(0, 0, 255, 0.664);
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+      font-size: 18px;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center;
+    }
+  }
+
+}

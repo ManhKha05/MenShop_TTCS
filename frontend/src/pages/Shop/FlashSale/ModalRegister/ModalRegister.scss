@@ -1,0 +1,34 @@
+.flashsale-shop {
+
+  .modal {
+
+    .info {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+
+      .name {
+        font-weight: 600;
+      }
+    }
+
+    .image {
+      height: 50px;
+    }
+
+    .price {
+      font-size: 16px;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+    }
+
+    .actions {
+      text-align: end;
+      margin-top: 20px;
+
+      button {
+        margin: 0 10px;
+      }
+    }
+  }
+}
