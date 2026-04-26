@@ -28,16 +28,20 @@ function Product() {
   const [reviews, setReviews] = useState([]);
 
   const { addVariant, token } = useContext(CartContext);
+  const [recommendations, setRecommendations] = useState([]);
 
   const fetchProduct = async () => {
     try {
-      const [productRes] = await Promise.all([
-        get(`products/${id}`)
+      const [productRes, recsRes] = await Promise.all([
+        get(`products/${id}`),
+        get(`products/recommendations/detail?productId=${id}`)
       ])
 
       const productData = await productRes.json();
+      const recsData = await recsRes.json();
 
       setProduct(productData);
+      setRecommendations(recsData);
 
       if (productData.images?.length > 0) {
         setThumbnail(productData.images[0]);
@@ -50,6 +54,7 @@ function Product() {
 
   useEffect(() => {
     fetchProduct();
+    window.scrollTo(0, 0);
   }, [id])
 
   const fetchReviews = async () => {
@@ -497,42 +502,58 @@ function Product() {
             ]}
           />
 
-          <div className="related-products">
+<div className="related-products">
             <div className="related-products__title">
               SẢN PHẨM TƯƠNG TỰ
             </div>
+
             <div className="related-products__body">
-              <Link to={`/san-pham./1`} className="related-product">
-                <img
-                  src="https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lm7427ucy50ffd.webp"
-                  alt=""
-                  className="related-product__image"
-                />
-                <div className="related-product__main">
-                  <div className="related-product__name">
-                    Áo Sơ Mi Denim Nam Dekace Cao Cấp Vải Dày Co Giãn SMDE
-                  </div>
-                  <div className="related-product__rate">
-                    <TiStarFullOutline />
-                    4.9
-                  </div>
-                  <div className="related-product__row">
-                    <div className="related-product__price">
-                      230.300đ
+              {recommendations && recommendations.length > 0 ? (
+                recommendations.map((item) => (
+                  <Link to={`/san-pham/${item.id}`} className="related-product" key={item.id}>
+                    <img
+                      src={item.image}
+                      alt={item.name}
+                      className="related-product__image"
+                      onError={(e) => { e.target.src = '/default-product-image.jpg' }}
+                    />
+                    <div className="related-product__main">
+                      <div className="related-product__name">
+                        {item.name}
+                      </div>
+
+                      <div className="related-product__rate">
+                        <TiStarFullOutline />
+                        {item.rate || 5.0}
+                      </div>
+
+                      <div className="related-product__row">
+                        <div className="related-product__price">
+                          {item.price?.toLocaleString()}đ
+                        </div>
+                        <div className="related-product__sold">
+                          {/* Đổi thành item.sold hoặc item.stock tùy vào dữ liệu API trả ra */}
+                          Tồn kho: {item.stock || 0}
+                        </div>
+                      </div>
                     </div>
-                    <div className="related-product__sold">
-                      Đã bán 85
-                    </div>
-                  </div>
+                  </Link>
+                ))
+              ) : (
+                // Fallback khi chưa có data
+                <div style={{ textAlign: "center", width: "100%", padding: "20px", color: "#888" }}>
+                  Đang tìm các sản phẩm phù hợp nhất...
                 </div>
-              </Link>
+              )}
             </div>
 
-            {/* <div style={{ textAlign: "center" }}>
-              <button className="related-products__btn">
-                Xem thêm
-              </button>
-            </div> */}
+            {recommendations && recommendations.length > 0 && (
+              <div style={{ textAlign: "center" }}>
+                <button className="related-products__btn">
+                  Xem thêm
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>

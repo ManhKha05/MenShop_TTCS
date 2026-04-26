@@ -176,4 +176,6 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Integer>
             @Param("rating") Integer rating,
             Pageable pageable
     );
+
+//    List<ProductEntity> findByIdIn(List<Integer> ids);
 }

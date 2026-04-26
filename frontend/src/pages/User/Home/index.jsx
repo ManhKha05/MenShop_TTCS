@@ -12,22 +12,26 @@ function Home() {
   const [flashSale, setFlashSale] = useState(null);
   const [timeLeft, setTimeLeft] = useState(null);
   const [reload, setReload] = useState(false);
+  const [recommendations, setRecommendations] = useState([]);
 
   useEffect(() => {
     const fetchApi = async () => {
       try {
-        const [bannersRes, categoriesRes, flashSaleRes] = await Promise.all([
+        const [bannersRes, categoriesRes, flashSaleRes, recsRes] = await Promise.all([
           get("banners"),
           get("categories/parents"),
-          get("flash-sale/active")
+          get("flash-sale/active"),
+          get("products/recommendations/home")
         ]);
 
         const bannersData = await bannersRes.json();
         const categoriesData = await categoriesRes.json();
         const flashSaleData = await flashSaleRes.json();
+        const recsData = await recsRes.json();
 
         setCategories(categoriesData);
         setFlashSale(flashSaleData);
+        setRecommendations(recsData);
 
         // Group Banners
         let groupBanners = [];
@@ -188,32 +192,42 @@ function Home() {
             </div>
           )}
 
-          <div className="recommend">
+<div className="recommend">
             <div className="recommend__header">
               GỢI Ý HÔM NAY
             </div>
+
             <div className="recommend__list">
-              <Link to="/" className="recommend__item">
-                <img src="https://salt.tikicdn.com/cache/750x750/ts/product/55/d8/59/6ab171f91b1f5cddb98696a937f88ac5.jpg.webp" alt="" className="recommend__item__image" />
-                <div className="recommend__item__info">
-                  {/* <div className="recommend__item__rating">
-                    <CiStar /> 
-                    <b>4.8</b> <span>(32 đánh giá)</span>
-                  </div> */}
-                  <div className="recommend__item__title">
-                    Cáp sạc nhanh, truyền dữ liệu tốc độ cao
-                  </div>
-                  <div className="recommend__item__footer">
-                    <div className="recommend__item__price">
-                      119.000<sup>₫</sup>
+              {recommendations && recommendations.length > 0 ? (
+                recommendations.map((item) => (
+                  <Link to={`/san-pham/${item.id}`} className="recommend__item" key={item.id}>
+                    <img
+                      src={item.image}
+                      alt={item.name}
+                      className="recommend__item__image"
+                      onError={(e) => { e.target.src = '/default-product-image.jpg' }}
+                    />
+
+                    <div className="recommend__item__info">
+                      <div className="recommend__item__title">
+                        {item.name}
+                      </div>
+                      <div className="recommend__item__footer">
+                        <div className="recommend__item__price">
+                          {item.price?.toLocaleString()}<sup>₫</sup>
+                        </div>
+                        <div className="recommend__item__sold">
+                          Tồn kho: {item.stock}
+                        </div>
+                      </div>
                     </div>
-                    <div className="recommend__item__sold">
-                      Đã bán 123
-                    </div>
-                  </div>
+                  </Link>
+                ))
+              ) : (
+                <div style={{ padding: '20px', width: '100%', textAlign: 'center', color: '#888' }}>
+                  Đang tải gợi ý dành riêng cho bạn...
                 </div>
-              </Link>
-              
+              )}
             </div>
           </div>
 
