@@ -1,6 +1,7 @@
 package com.ttcs.menshop.modules.shop.entity;
 
 import com.ttcs.menshop.auth.entity.UserEntity;
+import com.ttcs.menshop.modules.chat.entity.ChatRoomEntity;
 import com.ttcs.menshop.modules.order.entity.OrderEntity;
 import com.ttcs.menshop.modules.order_item.entity.OrderItemEntity;
 import com.ttcs.menshop.modules.product.entity.ProductEntity;
@@ -56,4 +57,7 @@ public class ShopEntity {
 
     @OneToMany(mappedBy = "shop")
     private List<OrderItemEntity> orderItems;
+
+    @OneToMany(mappedBy = "shop")
+    private List<ChatRoomEntity> chatRooms;
 }

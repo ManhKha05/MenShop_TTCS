@@ -113,6 +113,10 @@ public class OrderServiceImpl implements OrderService {
             ProductVariantEntity variant = productVariantRepository.findById(item.getVariantId())
                     .orElseThrow(() -> new BadRequestException("Variant không tồn tại"));;
 
+            if(variant.getProduct().getShop().getUser().getId().equals(user.getId())) {
+                throw new BadRequestException("Bạn không thể mua sản phẩm của chính shop mình");
+            }
+
             if (variant.getStock() == null || variant.getStock() <= 0) {
                 throw new BadRequestException("Sản phẩm " + variant.getProduct().getName() + " đã hết hàng");
             }

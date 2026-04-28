@@ -2,6 +2,8 @@ package com.ttcs.menshop.auth.entity;
 
 import com.ttcs.menshop.modules.address.entity.AddressEntity;
 import com.ttcs.menshop.modules.cart_item.entity.CartItemEntity;
+import com.ttcs.menshop.modules.chat.entity.ChatMessageEntity;
+import com.ttcs.menshop.modules.chat.entity.ChatRoomEntity;
 import com.ttcs.menshop.modules.notification.entity.NotificationEntity;
 import com.ttcs.menshop.modules.order.entity.OrderEntity;
 import com.ttcs.menshop.modules.review.entity.ReviewEntity;
@@ -77,4 +79,10 @@ public class UserEntity {
 
     @OneToMany(mappedBy = "user")
     private List<ReviewEntity>  reviews = new ArrayList<>();
+
+    @OneToMany(mappedBy = "customer")
+    private List<ChatRoomEntity>  chatRooms = new ArrayList<>();
+
+    @OneToMany(mappedBy = "sender")
+    private List<ChatMessageEntity> chatMessages = new ArrayList<>();
 }

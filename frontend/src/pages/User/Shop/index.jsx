@@ -6,12 +6,13 @@ import { BiSolidHot } from "react-icons/bi";
 import { TiThList } from "react-icons/ti";
 import { IoIosArrowDown } from "react-icons/io";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
-import { Col, Row } from "antd";
+import { Col, notification, Row } from "antd";
 import { useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom"
-import { get } from "../../../utils/request";
+import { get, post } from "../../../utils/request";
 import { formatPrice } from "../../../utils/price";
 import { connectSocket, disconnectSocket, subscribeSocket } from "../../../utils/socket";
+import { useChat } from "../../../components/ChatContext";
 
 function Shop() {
   const allProductsRef = useRef(null);
@@ -26,6 +27,11 @@ function Shop() {
   const [categories, setCategories] = useState([]);
   const [bestSellingProducts, setBestSellingProducts] = useState([]);
   const [products, setProducts] = useState([]);
+
+  const { openChatWithRoom } = useChat();
+
+  const shopId = localStorage.getItem("shopId");
+  const isMyShop = shopId === id;
 
   const fetchOneTime = async () => {
     try {
@@ -95,7 +101,32 @@ function Shop() {
     };
   }, [id, products]);
 
-  console.log(bestSellingProducts);
+  const handleChatWithShop = async () => {
+    const token = localStorage.getItem("token");
+
+    console.log("ok")
+
+    if (!token) {
+      notification.warning({
+        message: "Bạn cần đăng nhập",
+        description: "Vui lòng đăng nhập để sử dụng chat",
+      });
+      return;
+    }
+    try {
+      const res = await post("chat/rooms", {
+        shopId: id
+      });
+      const data = await res.json();
+
+      openChatWithRoom(data.id);
+
+    } catch (error) {
+      notification.error({
+        message: "Không thể mở chat",
+      });
+    }
+  };
 
   return (
     <>
@@ -132,16 +163,18 @@ function Shop() {
               </div>
             </div>
 
-            {/* <div className="shop__actions">
-              <button className="shop__action shop__action--primary">
+            <div className="shop__actions">
+              {/* <button className="shop__action shop__action--primary">
                 <IoPersonAddSharp />
                 Theo dõi
-              </button>
-              <button className="shop__action shop__action--default">
-                <IoChatboxSharp />
-                Chat ngay
-              </button>
-            </div> */}
+              </button> */}
+              {!isMyShop && (
+                <button className="shop__action shop__action--default" onClick={handleChatWithShop} >
+                  <IoChatboxSharp />
+                  Chat ngay
+                </button>
+              )}
+            </div>
           </div>
 
 
@@ -163,7 +196,7 @@ function Shop() {
 
               <div className="shop__top-sell__products">
                 {bestSellingProducts.map(p => (
-                  <Link to={`/san-pham/${p.id}`} className="product">
+                  <Link to={`/san-pham/${p.id}`} className="product" key={p.id}>
                     <img src={p.image} alt="" className="product__image" />
                     <div className="product__name">
                       {p.name}

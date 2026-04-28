@@ -2,6 +2,7 @@ package com.ttcs.menshop.modules.cart_item.service.impl;
 
 import com.ttcs.menshop.auth.entity.UserEntity;
 import com.ttcs.menshop.auth.repository.UserRepository;
+import com.ttcs.menshop.exception.BadRequestException;
 import com.ttcs.menshop.exception.NotFoundException;
 import com.ttcs.menshop.modules.cart_item.dto.response.CartItemResponse;
 import com.ttcs.menshop.modules.cart_item.dto.response.CartShopResponse;
@@ -95,6 +96,10 @@ public class CartItemServiceImpl implements CartItemService {
         UserEntity user = userRepository.findById(userId).get();
         ProductVariantEntity variant = productVariantRepository.findById(variantId)
                 .orElseThrow(() -> new RuntimeException("Variant không tồn tại"));
+
+        if(variant.getProduct().getShop().getUser().getId().equals(user.getId())) {
+            throw new BadRequestException("Bạn không thể thêm sản phẩm của shop mình vào giỏ hàng");
+        }
 
         CartItemEntity cartItem = cartItemRepository.findByUserAndProductVariant(user, variant)
                 .orElseGet(() -> {

@@ -4,8 +4,14 @@ import SockJS from "sockjs-client";
 let client = null;
 
 export const connectSocket = (onConnected) => {
+  const token = localStorage.getItem("token");
   client = new Client({
     webSocketFactory: () => new SockJS("http://localhost:8080/ws"),
+
+    connectHeaders: {
+      Authorization: `Bearer ${token}`,
+    },
+
     reconnectDelay: 5000, // auto reconnect
     debug: (str) => {
       // console.log(str);

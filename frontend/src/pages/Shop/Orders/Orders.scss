@@ -63,4 +63,8 @@
     // padding: 15px;
     box-shadow: rgba(99, 99, 99, 0.1) 0px 2px 8px 0px;
   }
+
+  .ant-table-tbody {
+    min-height: 500px !important;
+  }
 }

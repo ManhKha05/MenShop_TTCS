@@ -3,7 +3,7 @@ package com.ttcs.menshop.modules.product.controller;
 import com.ttcs.menshop.modules.product.dto.response.ProductDetailResponse;
 import com.ttcs.menshop.modules.product.dto.response.ProductResponse;
 import com.ttcs.menshop.modules.product.service.ProductService;
-import com.ttcs.menshop.modules.product.service.RecommendationService;
+//import com.ttcs.menshop.modules.product.service.RecommendationService;
 import com.ttcs.menshop.security.CustomUserDetails;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -16,11 +16,11 @@ import java.util.List;
 public class UserProductController {
 
     private final ProductService productService;
-    private final RecommendationService recommendationService;
+//    private final RecommendationService recommendationService;
 
-    public UserProductController(ProductService productService, RecommendationService recommendationService) {
+    public UserProductController(ProductService productService) {
         this.productService = productService;
-        this.recommendationService = recommendationService;
+//        this.recommendationService = recommendationService;
     }
 
     @GetMapping("/{id}")

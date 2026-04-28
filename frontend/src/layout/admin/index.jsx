@@ -243,9 +243,9 @@ function LayoutAdmin() {
     <>
       <Layout>
         <Sider className="app-sider" theme="light" width={220} >
-          <div className="layout-admin__logo">
+          <Link to={"/"} className="layout-admin__logo">
             <img src="https://res.cloudinary.com/dcjraarbb/image/upload/v1772208191/Ch%E1%BB%A3_S%E1%BB%91_fdztr0.png" alt="" />
-          </div>
+          </Link>
           <Menu
             mode="inline"
             selectedKeys={[getSelectedKey(location)]}

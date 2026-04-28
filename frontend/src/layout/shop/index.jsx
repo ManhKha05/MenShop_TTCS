@@ -16,6 +16,7 @@ import { get } from "../../utils/request";
 import { Avatar, Button } from "antd";
 import { LogoutOutlined, UserOutlined } from "@ant-design/icons";
 import { post } from "../../utils/request";
+import ChatWidget from "../../components/ChatWidget";
 
 function LayoutShop() {
   const location = useLocation();
@@ -229,9 +230,9 @@ function LayoutShop() {
   return (
     <Layout>
       <Sider className="app-sider" theme="light" width={220}>
-        <div className="layout-admin__logo">
+        <Link to={"/"} className="layout-admin__logo">
           <img src="https://res.cloudinary.com/dcjraarbb/image/upload/v1772208191/Ch%E1%BB%A3_S%E1%BB%91_fdztr0.png" alt="" />
-        </div>
+        </Link>
 
         <Menu
           mode="inline"
@@ -294,6 +295,7 @@ function LayoutShop() {
           <Outlet />
         </Content>
       </Layout>
+      <ChatWidget />
     </Layout>
   );
 }

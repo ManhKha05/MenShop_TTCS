@@ -12,11 +12,13 @@ import { formatPrice } from "../../../utils/price";
 import { CartContext } from "../../../components/CartContext";
 import { connectSocket, disconnectSocket, subscribeSocket } from "../../../utils/socket";
 import { formatDateTime } from "../../../utils/date"
+import { useChat } from "../../../components/ChatContext";
+
 
 function Product() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [thumbnail, setThumbnail] = useState("https://down-vn.img.susercontent.com/file/vn-11134207-7ras8-m3bufh4u6qw894.webp")
+  const [thumbnail, setThumbnail] = useState("")
   const [color, setColor] = useState();
   const [size, setSize] = useState();
   const [product, setProduct] = useState({});
@@ -29,6 +31,8 @@ function Product() {
 
   const { addVariant, token } = useContext(CartContext);
   const [recommendations, setRecommendations] = useState([]);
+
+  const { openChatWithRoom } = useChat();
 
   const fetchProduct = async () => {
     try {
@@ -76,7 +80,6 @@ function Product() {
     fetchReviews();
   }, [id, pageReview]);
 
-  console.log("reviews", reviews);
 
   useEffect(() => {
     let subscription;
@@ -227,7 +230,34 @@ function Product() {
     navigate("/thanh-toan");
   };
 
-  console.log(product);
+  const handleChatWithShop = async () => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      notification.warning({
+        message: "Bạn cần đăng nhập",
+        description: "Vui lòng đăng nhập để sử dụng chat",
+      });
+      return;
+    }
+    try {
+      const res = await post("chat/rooms", {
+        shopId: product.shopId
+      });
+      const data = await res.json();
+
+      openChatWithRoom(data.id);
+
+    } catch (error) {
+      notification.error({
+        message: "Không thể mở chat",
+      });
+    }
+  };
+
+  const shopId = Number(localStorage.getItem("shopId"));
+  const isOwnerShopProduct =
+    product?.shopId === shopId;
 
   return (
     <>
@@ -355,13 +385,17 @@ function Product() {
               </div>
 
               <div className="product-actions">
-                <button className="product__add-to-cart" onClick={handleAddToCart}>
-                  <MdAddShoppingCart />
-                  Thêm vào giỏ
-                </button>
-                <button className="product__buy-now" onClick={handleBuyNow}>
-                  Mua ngay
-                </button>
+                {!isOwnerShopProduct && (
+                  <>
+                    <button className="product__add-to-cart" onClick={handleAddToCart}>
+                      <MdAddShoppingCart />
+                      Thêm vào giỏ
+                    </button>
+                    <button className="product__buy-now" onClick={handleBuyNow}>
+                      Mua ngay
+                    </button>
+                  </>
+                )}
               </div>
             </div>
 
@@ -395,10 +429,13 @@ function Product() {
               </div>
 
               <div className="product-shop__footer">
-                {/* <button className="product-shop__chat">
-                  <MdOutlineChat />
-                  CHAT NGAY
-                </button> */}
+                {!isOwnerShopProduct && (
+                  <button className="product-shop__chat" onClick={handleChatWithShop}>
+                    <MdOutlineChat />
+                    CHAT NGAY
+                  </button>
+                )}
+
                 {/* <Link to={`/cua-hang/${product.shopId}`}> */}
                 <button className="product-shop__view">
                   <Link to={`/cua-hang/${product.shopId}`}>
@@ -502,7 +539,7 @@ function Product() {
             ]}
           />
 
-<div className="related-products">
+          <div className="related-products">
             <div className="related-products__title">
               SẢN PHẨM TƯƠNG TỰ
             </div>

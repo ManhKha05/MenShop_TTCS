@@ -315,3 +315,38 @@ CREATE TABLE user_interaction (
     FOREIGN KEY(user_id) REFERENCES user(id) ON DELETE CASCADE,
     FOREIGN KEY(product_id) REFERENCES product(id) ON DELETE CASCADE
 );
+
+-- Chat Room
+CREATE TABLE chat_room (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    customer_id INT NOT NULL,
+    shop_id INT NOT NULL,
+    last_message TEXT NULL,
+    last_message_at DATETIME NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_chat_room_customer FOREIGN KEY (customer_id) REFERENCES user(id),
+    CONSTRAINT fk_chat_room_shop FOREIGN KEY (shop_id) REFERENCES shop(id),
+    CONSTRAINT uq_chat_room_customer_shop UNIQUE (customer_id, shop_id)
+);
+
+-- Chat Message
+CREATE TABLE chat_message (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    room_id INT NOT NULL,
+    sender_id INT NOT NULL,
+    content TEXT NOT NULL,
+    is_read BOOLEAN DEFAULT FALSE,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_chat_message_room FOREIGN KEY (room_id) REFERENCES chat_room(id) ON DELETE CASCADE,
+
+    CONSTRAINT fk_chat_message_sender FOREIGN KEY (sender_id) REFERENCES user(id)
+);
+
+-- INDEX
+CREATE INDEX idx_chat_room_customer ON chat_room(customer_id);
+CREATE INDEX idx_chat_room_shop ON chat_room(shop_id);
+CREATE INDEX idx_chat_message_room ON chat_message(room_id);
+CREATE INDEX idx_chat_message_product ON chat_message(product_id);
+CREATE INDEX idx_chat_message_created_at ON chat_message(created_at);
