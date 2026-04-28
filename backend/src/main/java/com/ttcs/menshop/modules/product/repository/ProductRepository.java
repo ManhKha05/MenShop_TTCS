@@ -177,5 +177,5 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Integer>
             Pageable pageable
     );
 
-//    List<ProductEntity> findByIdIn(List<Integer> ids);
+    List<ProductEntity> findByIdIn(List<Integer> ids);
 }

@@ -26,7 +26,10 @@ import com.ttcs.menshop.modules.order_status.repository.OrderStatusRepository;
 import com.ttcs.menshop.modules.payment_group.entity.PaymentGroupEntity;
 import com.ttcs.menshop.modules.payment_group.repository.PaymentGroupRepository;
 import com.ttcs.menshop.modules.product.entity.ProductEntity;
+import com.ttcs.menshop.modules.product.entity.UserInteractionEntity;
+import com.ttcs.menshop.modules.product.enums.InteractionType;
 import com.ttcs.menshop.modules.product.repository.ProductRepository;
+import com.ttcs.menshop.modules.product.repository.UserInteractionRepository;
 import com.ttcs.menshop.modules.product_image.entity.ProductImageEntity;
 import com.ttcs.menshop.modules.product_variant.entity.ProductVariantEntity;
 import com.ttcs.menshop.modules.product_variant.repository.ProductVariantRepository;
@@ -72,8 +75,9 @@ public class OrderServiceImpl implements OrderService {
     private final ShopNotificationService shopNotificationService;
     private final NotificationService notificationService;
     private final EmailService emailService;
+    private final UserInteractionRepository userInteractionRepository;
 
-    public OrderServiceImpl(UserRepository userRepository, AddressRepository addressRepository, CartItemRepository cartItemRepository, OrderRepository orderRepository, OrderItemRepository orderItemRepository, ProductVariantRepository productVariantRepository, OrderStatusRepository orderStatusRepository, PaymentGroupRepository paymentGroupRepository, VnPayService vnPayService, SaleProductRepository saleProductRepository, ShopRepository shopRepository, ShopRepository shopRepository1, AuthService authService, WebSocketService webSocketService, ProductRepository productRepository, ShopNotificationService shopNotificationService, NotificationService notificationService, EmailService emailService) {
+    public OrderServiceImpl(UserRepository userRepository, AddressRepository addressRepository, CartItemRepository cartItemRepository, OrderRepository orderRepository, OrderItemRepository orderItemRepository, ProductVariantRepository productVariantRepository, OrderStatusRepository orderStatusRepository, PaymentGroupRepository paymentGroupRepository, VnPayService vnPayService, SaleProductRepository saleProductRepository, ShopRepository shopRepository, ShopRepository shopRepository1, AuthService authService, WebSocketService webSocketService, ProductRepository productRepository, ShopNotificationService shopNotificationService, NotificationService notificationService, EmailService emailService, UserInteractionRepository userInteractionRepository) {
         this.userRepository = userRepository;
         this.addressRepository = addressRepository;
         this.cartItemRepository = cartItemRepository;
@@ -91,6 +95,7 @@ public class OrderServiceImpl implements OrderService {
         this.shopNotificationService = shopNotificationService;
         this.notificationService = notificationService;
         this.emailService = emailService;
+        this.userInteractionRepository = userInteractionRepository;
     }
 
     @Transactional
@@ -209,6 +214,7 @@ public class OrderServiceImpl implements OrderService {
             orderRepository.save(order);
 
             List<OrderItemEntity> orderItems = new ArrayList<>();
+            List<UserInteractionEntity> interactions = new ArrayList<>();
             for (PreparedOrderItem item : shopItems) {
                 OrderItemEntity orderItem = new OrderItemEntity();
                 orderItem.setOrder(order);
@@ -220,6 +226,15 @@ public class OrderServiceImpl implements OrderService {
 
                 orderItems.add(orderItem);
 
+                UserInteractionEntity userInteractionEntity = UserInteractionEntity.builder()
+                        .user(user)
+                        .product(item.getVariant().getProduct())
+                        .interactionType(InteractionType.PURCHASE)
+                        .weightScore(BigDecimal.valueOf(5.0).multiply(BigDecimal.valueOf(item.getQuantity())))
+                        .build();
+
+                interactions.add(userInteractionEntity);
+
                 ProductVariantEntity variant = item.getVariant();
                 variant.setStock(variant.getStock() - item.getQuantity());
                 productVariantRepository.save(variant);
@@ -230,6 +245,7 @@ public class OrderServiceImpl implements OrderService {
             }
 
             orderItemRepository.saveAll(orderItems);
+            userInteractionRepository.saveAll(interactions);
 
             OrderStatusEntity orderStatus = new OrderStatusEntity();
             orderStatus.setOrder(order);
