@@ -18,7 +18,10 @@ import com.ttcs.menshop.modules.product.dto.response.ProductDetailResponse;
 import com.ttcs.menshop.modules.product.dto.response.ProductResponse;
 import com.ttcs.menshop.modules.product.dto.response.ProductStatsResponse;
 import com.ttcs.menshop.modules.product.entity.ProductEntity;
+import com.ttcs.menshop.modules.product.entity.UserInteractionEntity;
+import com.ttcs.menshop.modules.product.enums.InteractionType;
 import com.ttcs.menshop.modules.product.repository.ProductRepository;
+import com.ttcs.menshop.modules.product.repository.UserInteractionRepository;
 import com.ttcs.menshop.modules.product.service.ProductService;
 import com.ttcs.menshop.modules.product_image.entity.ProductImageEntity;
 import com.ttcs.menshop.modules.product_variant.dto.request.ProductVariantRequest;
@@ -58,8 +61,9 @@ public class ProductServiceImpl implements ProductService {
     private final CategoryService categoryService;
     private final NotificationService notificationService;
     private final UserRepository userRepository;
+    private final UserInteractionRepository userInteractionRepository;
 
-    public ProductServiceImpl(CategoryRepository categoryRepository, ProductRepository productRepository, BrandService brandService, ProductConverter productConverter, SaleProductRepository saleProductRepository, WebSocketService webSocketService, OrderItemRepository orderItemRepository, AuthService authService, ShopRepository shopRepository, CategoryService categoryService, NotificationService notificationService, UserRepository userRepository) {
+    public ProductServiceImpl(CategoryRepository categoryRepository, ProductRepository productRepository, BrandService brandService, ProductConverter productConverter, SaleProductRepository saleProductRepository, WebSocketService webSocketService, OrderItemRepository orderItemRepository, AuthService authService, ShopRepository shopRepository, CategoryService categoryService, NotificationService notificationService, UserRepository userRepository, UserInteractionRepository userInteractionRepository) {
         this.categoryRepository = categoryRepository;
         this.productRepository = productRepository;
         this.brandService = brandService;
@@ -72,6 +76,7 @@ public class ProductServiceImpl implements ProductService {
         this.categoryService = categoryService;
         this.notificationService = notificationService;
         this.userRepository = userRepository;
+        this.userInteractionRepository = userInteractionRepository;
     }
 
     @Override
@@ -101,8 +106,21 @@ public class ProductServiceImpl implements ProductService {
         ProductEntity p = productRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Not found"));
 
-        p.setViewCount(p.getViewCount() + 1);
-        productRepository.save(p);
+        UserEntity user = authService.getCurrentUser();
+
+        if(user.getRoles().toString().equals("CUSTOMER")){
+            p.setViewCount(p.getViewCount() + 1);
+            productRepository.save(p);
+
+            UserInteractionEntity userInteractionEntity = UserInteractionEntity.builder()
+                    .user(user)
+                    .product(p)
+                    .interactionType(InteractionType.VIEW)
+                    .weightScore(BigDecimal.valueOf(1.0))
+                    .build();
+
+            userInteractionRepository.save(userInteractionEntity);
+        }
 
         ProductDetailResponse res = new ProductDetailResponse();
 

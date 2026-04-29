@@ -9,6 +9,9 @@ import com.ttcs.menshop.modules.cart_item.dto.response.CartShopResponse;
 import com.ttcs.menshop.modules.cart_item.entity.CartItemEntity;
 import com.ttcs.menshop.modules.cart_item.repository.CartItemRepository;
 import com.ttcs.menshop.modules.cart_item.service.CartItemService;
+import com.ttcs.menshop.modules.product.entity.UserInteractionEntity;
+import com.ttcs.menshop.modules.product.enums.InteractionType;
+import com.ttcs.menshop.modules.product.repository.UserInteractionRepository;
 import com.ttcs.menshop.modules.product_variant.entity.ProductVariantEntity;
 import com.ttcs.menshop.modules.product_variant.repository.ProductVariantRepository;
 import com.ttcs.menshop.modules.sale_product.entity.SaleProductEntity;
@@ -17,7 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -29,12 +31,14 @@ public class CartItemServiceImpl implements CartItemService {
     private final UserRepository userRepository;
     private final ProductVariantRepository productVariantRepository;
     private final SaleProductRepository saleProductRepository;
+    private final UserInteractionRepository userInteractionRepository;
 
-    public CartItemServiceImpl(CartItemRepository cartItemRepository, UserRepository userRepository, ProductVariantRepository productVariantRepository, SaleProductRepository saleProductRepository) {
+    public CartItemServiceImpl(CartItemRepository cartItemRepository, UserRepository userRepository, ProductVariantRepository productVariantRepository, SaleProductRepository saleProductRepository, UserInteractionRepository userInteractionRepository) {
         this.cartItemRepository = cartItemRepository;
         this.userRepository = userRepository;
         this.productVariantRepository = productVariantRepository;
         this.saleProductRepository = saleProductRepository;
+        this.userInteractionRepository = userInteractionRepository;
     }
 
     @Override
@@ -111,6 +115,14 @@ public class CartItemServiceImpl implements CartItemService {
 
         cartItem.setQuantity(cartItem.getQuantity() == null ? quantity : cartItem.getQuantity() + quantity);
 
+        UserInteractionEntity userInteractionEntity = UserInteractionEntity.builder()
+                .user(user)
+                .product(variant.getProduct())
+                .interactionType(InteractionType.ADD_TO_CART)
+                .weightScore(BigDecimal.valueOf(3.0))
+                .build();
+
+        userInteractionRepository.save(userInteractionEntity);
         cartItemRepository.save(cartItem);
     }
 
