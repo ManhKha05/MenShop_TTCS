@@ -14,9 +14,9 @@ function NotFound({ message = "Trang hoặc dữ liệu bạn tìm không tồn 
           <Button type="primary" key="home" onClick={() => navigate("/")}>
             Về trang chủ
           </Button>,
-          <Button key="back" onClick={() => navigate(-1)}>
-            Quay lại
-          </Button>,
+          // <Button key="back" onClick={() => navigate(-1)}>
+          //   Quay lại
+          // </Button>,
         ]}
       />
     </div>

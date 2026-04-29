@@ -57,13 +57,13 @@ function Banners() {
     }
   }
   
-  if (loading) {
-    return (
-      <div className="dashboard-admin dashboard-admin--loading">
-        <Spin size="large" />
-      </div>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <div className="dashboard-admin dashboard-admin--loading">
+  //       <Spin size="large" />
+  //     </div>
+  //   );
+  // }
 
   return (
     <>

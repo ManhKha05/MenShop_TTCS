@@ -15,6 +15,6 @@ public interface ShopService {
     ShopStatsResponse getShopStats();
     Page<ShopResponse> getAllShop(String keyword, String status, String sort, int page, int size);
     List<ShopResponse> getAllShopsNoPagi();
-    ShopResponse getShopById(Integer shopId);
+    ShopResponse getShopById(Integer shopId, String role);
     void updateStatusShop(Integer id, UpdateStatusShopRequest request);
 }

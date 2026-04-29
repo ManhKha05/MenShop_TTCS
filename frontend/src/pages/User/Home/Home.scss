@@ -229,7 +229,9 @@
       }
 
       &__image {
+        height: 270px;
         width: 100%;
+        object-fit: cover;
       }
 
       &__info {

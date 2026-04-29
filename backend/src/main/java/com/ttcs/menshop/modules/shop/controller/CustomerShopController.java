@@ -35,7 +35,7 @@ public class CustomerShopController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getShop(@PathVariable Integer id) {
-        return ResponseEntity.ok(shopService.getShopById(id));
+        return ResponseEntity.ok(shopService.getShopById(id, "CUSTOMER"));
     }
 
     @GetMapping("/{id}/categories")

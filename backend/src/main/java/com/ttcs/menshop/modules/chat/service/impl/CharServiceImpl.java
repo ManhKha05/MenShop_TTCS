@@ -157,10 +157,27 @@ public class CharServiceImpl implements ChatService {
     }
 
     private ChatRoomResponse toRoomResponse(ChatRoomEntity room, Integer currentUserId) {
+
         Integer unreadCount = chatMessageRepository
                 .countByRoomIdAndIsReadFalseAndSenderIdNot(room.getId(), currentUserId);
 
-        ChatMessageEntity lastMessage = chatMessageRepository.findFirstByRoomIdOrderByCreatedAtDesc(room.getId());
+        ChatMessageEntity lastMessage = chatMessageRepository
+                .findFirstByRoomIdOrderByCreatedAtDesc(room.getId());
+
+        Integer lastSenderId = null;
+        String lastMessageContent = null;
+        LocalDateTime lastMessageAt = null;
+
+        if (lastMessage != null) {
+            if (lastMessage.getSender() != null) {
+                lastSenderId = lastMessage.getSender().getId();
+            }
+            lastMessageContent = lastMessage.getContent();
+            lastMessageAt = lastMessage.getCreatedAt();
+        } else {
+            lastMessageContent = null;
+            lastMessageAt = room.getCreatedAt();
+        }
 
         return ChatRoomResponse.builder()
                 .id(room.getId())
@@ -173,9 +190,10 @@ public class CharServiceImpl implements ChatService {
                 .shopName(room.getShop().getName())
                 .shopLogo(room.getShop().getLogo())
 
-                .lastSenderId(lastMessage.getSender().getId())
-                .lastMessage(room.getLastMessage())
-                .lastMessageAt(room.getLastMessageAt())
+                .lastSenderId(lastSenderId)
+                .lastMessage(lastMessageContent)
+                .lastMessageAt(lastMessageAt)
+
                 .unreadCount(unreadCount)
                 .build();
     }

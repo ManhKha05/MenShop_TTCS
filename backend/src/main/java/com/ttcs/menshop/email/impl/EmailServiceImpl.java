@@ -4,6 +4,7 @@ import com.ttcs.menshop.email.EmailService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -27,6 +28,7 @@ public class EmailServiceImpl implements EmailService {
         mailSender.send(message);
     }
 
+    @Async
     public void sendOrderStatusEmail(String to, String customerName, String orderCode, String status) {
         String subject = "Cập nhật trạng thái đơn hàng " + orderCode;
         String content = buildOrderStatusContent(customerName, orderCode, status);

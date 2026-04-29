@@ -50,7 +50,7 @@ const number = (value) =>
 const ORDER_STATUS_LABEL = {
   PENDING: "Chờ xác nhận",
   CONFIRMED: "Đã xác nhận",
-  SHIPPING: "Đang giao",
+  DELIVERING: "Đang giao",
   DELIVERED: "Hoàn thành",
   CANCELLED: "Đã hủy"
 };
@@ -58,7 +58,7 @@ const ORDER_STATUS_LABEL = {
 const ORDER_STATUS_COLOR = {
   PENDING: "gold",
   CONFIRMED: "blue",
-  SHIPPING: "processing",
+  DELIVERING: "processing",
   DELIVERED: "success",
   CANCELLED: "error"
 };

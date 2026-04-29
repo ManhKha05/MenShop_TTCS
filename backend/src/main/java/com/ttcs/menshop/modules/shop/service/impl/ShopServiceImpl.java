@@ -7,6 +7,7 @@ import com.ttcs.menshop.auth.repository.UserRepository;
 import com.ttcs.menshop.auth.service.AuthService;
 import com.ttcs.menshop.exception.NotFoundException;
 import com.ttcs.menshop.modules.notification.service.NotificationService;
+import com.ttcs.menshop.modules.product.repository.ProductRepository;
 import com.ttcs.menshop.modules.shop.converter.ShopConverter;
 import com.ttcs.menshop.modules.shop.dto.request.ShopRequest;
 import com.ttcs.menshop.modules.shop.dto.request.UpdateStatusShopRequest;
@@ -33,14 +34,16 @@ public class ShopServiceImpl implements ShopService {
     private final RoleRepository roleRepository;
     private final AuthService authService;
     private final NotificationService notificationService;
+    private final ProductRepository productRepository;
 
-    public ShopServiceImpl(ShopConverter shopConverter, ShopRepository shopRepository, UserRepository userRepository, RoleRepository roleRepository, AuthService authService, NotificationService notificationService) {
+    public ShopServiceImpl(ShopConverter shopConverter, ShopRepository shopRepository, UserRepository userRepository, RoleRepository roleRepository, AuthService authService, NotificationService notificationService, ProductRepository productRepository) {
         this.shopConverter = shopConverter;
         this.shopRepository = shopRepository;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.authService = authService;
         this.notificationService = notificationService;
+        this.productRepository = productRepository;
     }
 
     @Transactional
@@ -129,9 +132,14 @@ public class ShopServiceImpl implements ShopService {
     }
 
     @Override
-    public ShopResponse getShopById(Integer id) {
+    public ShopResponse getShopById(Integer id, String role) {
         ShopEntity shopEntity = shopRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Không tìm thấy shop id: " + id));
+
+        if (role.equals("CUSTOMER") && !"ACTIVE".equals(shopEntity.getStatus())) {
+            throw new NotFoundException("Shop hiện không hoạt động");
+        }
+
         return shopConverter.toResponse(shopEntity);
     }
 
@@ -140,13 +148,22 @@ public class ShopServiceImpl implements ShopService {
     public void updateStatusShop(Integer id, UpdateStatusShopRequest request) {
         ShopEntity shopEntity = shopRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Không tìm thấy shop id: " + id));
+
         shopEntity.setStatus(request.getStatus());
 
-        if(request.getStatus().equals("ACTIVE")) {
-            RoleEntity role = roleRepository.findByName("SHOP").orElse(null);
+        if ("ACTIVE".equals(request.getStatus())) {
+            RoleEntity role = roleRepository.findByName("SHOP")
+                    .orElseThrow(() -> new NotFoundException("Không tìm thấy role SHOP"));
+
             UserEntity user = shopEntity.getUser();
-            user.getRoles().add(role);
-            userRepository.save(user);
+
+            boolean hasShopRole = user.getRoles().stream()
+                    .anyMatch(r -> "SHOP".equals(r.getName()));
+
+            if (!hasShopRole) {
+                user.getRoles().add(role);
+                userRepository.save(user);
+            }
         }
 
         shopRepository.save(shopEntity);

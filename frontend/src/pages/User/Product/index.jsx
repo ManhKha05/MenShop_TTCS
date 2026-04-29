@@ -41,6 +41,11 @@ function Product() {
         get(`products/recommendations/detail?productId=${id}`)
       ])
 
+      if(!productRes.ok) {
+        navigate('/404')
+        return;
+      }
+
       const productData = await productRes.json();
       const recsData = await recsRes.json();
 
@@ -259,6 +264,7 @@ function Product() {
   const isOwnerShopProduct =
     product?.shopId === shopId;
 
+  console.log(product)
   return (
     <>
       <div className="product">
@@ -584,13 +590,13 @@ function Product() {
               )}
             </div>
 
-            {recommendations && recommendations.length > 0 && (
+            {/* {recommendations && recommendations.length > 0 && (
               <div style={{ textAlign: "center" }}>
                 <button className="related-products__btn">
                   Xem thêm
                 </button>
               </div>
-            )}
+            )} */}
           </div>
         </div>
       </div>

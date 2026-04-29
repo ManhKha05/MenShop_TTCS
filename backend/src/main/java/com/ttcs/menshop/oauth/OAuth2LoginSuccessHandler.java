@@ -1,6 +1,7 @@
 package com.ttcs.menshop.oauth;
 
 import com.ttcs.menshop.auth.entity.UserEntity;
+import com.ttcs.menshop.exception.AccountLockedException;
 import com.ttcs.menshop.jwt.JwtUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -36,7 +37,20 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
 
         OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
 
-        UserEntity user = oAuth2UserServiceCustom.processOAuthPostLogin(oAuth2User);
+        UserEntity user;
+
+        try {
+            user = oAuth2UserServiceCustom.processOAuthPostLogin(oAuth2User);
+        } catch (AccountLockedException e) {
+            String redirectUrl = UriComponentsBuilder
+                    .fromUriString("http://localhost:3000/dang-nhap")
+                    .queryParam("error", "account_locked")
+                    .build()
+                    .toUriString();
+
+            getRedirectStrategy().sendRedirect(request, response, redirectUrl);
+            return;
+        }
 
         String accessToken = jwtUtil.generateToken(user.getEmail());
         String refreshToken = jwtUtil.generateRefreshToken(user.getEmail());

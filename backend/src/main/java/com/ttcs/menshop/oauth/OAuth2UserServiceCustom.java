@@ -4,6 +4,8 @@ import com.ttcs.menshop.auth.entity.RoleEntity;
 import com.ttcs.menshop.auth.entity.UserEntity;
 import com.ttcs.menshop.auth.repository.RoleRepository;
 import com.ttcs.menshop.auth.repository.UserRepository;
+import com.ttcs.menshop.exception.AccountLockedException;
+import com.ttcs.menshop.exception.BadRequestException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
@@ -29,6 +31,10 @@ public class OAuth2UserServiceCustom {
 
         return userRepository.findByEmail(email)
                 .map(existingUser -> {
+                    if ("LOCKED".equals(existingUser.getStatus())) {
+                        throw new AccountLockedException("Tài khoản đã bị khóa. Vui lòng liên hệ quản trị viên để hỗ trợ!");
+                    }
+
                     if (existingUser.getFullName() == null || existingUser.getFullName().isBlank()) {
                         existingUser.setFullName(fullName);
                     }

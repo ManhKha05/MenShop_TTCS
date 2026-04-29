@@ -8,13 +8,14 @@ import { IoIosArrowDown } from "react-icons/io";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { Col, notification, Row } from "antd";
 import { useEffect, useRef, useState } from "react";
-import { Link, useParams } from "react-router-dom"
+import { Link, useNavigate, useParams } from "react-router-dom"
 import { get, post } from "../../../utils/request";
 import { formatPrice } from "../../../utils/price";
 import { connectSocket, disconnectSocket, subscribeSocket } from "../../../utils/socket";
 import { useChat } from "../../../components/ChatContext";
 
 function Shop() {
+  const navigate = useNavigate();
   const allProductsRef = useRef(null);
   const { id } = useParams();
   const [page, setPage] = useState(1);
@@ -40,6 +41,11 @@ function Shop() {
         get(`shops/${id}/categories`),
         get(`shops/${id}/best-selling-products`)
       ])
+
+      if (!shopRes.ok) {
+        navigate("/404");
+        return;
+      }
 
       const shopData = await shopRes.json();
       const categoriesData = await categoriesRes.json();
@@ -104,8 +110,6 @@ function Shop() {
   const handleChatWithShop = async () => {
     const token = localStorage.getItem("token");
 
-    console.log("ok")
-
     if (!token) {
       notification.warning({
         message: "Bạn cần đăng nhập",
@@ -127,6 +131,8 @@ function Shop() {
       });
     }
   };
+
+  console.log(products)
 
   return (
     <>
@@ -331,7 +337,7 @@ function Shop() {
                         <div className="product__row">
                           <div className="product__rating">
                             <IoIosStar />
-                            {Math.round(p.rating, 1)}
+                            {(Math.round(p.rating * 10) / 10)}
                           </div>
                           <div className="product__sold">
                             Đã bán {p.sold}

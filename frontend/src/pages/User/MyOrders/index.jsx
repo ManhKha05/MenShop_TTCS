@@ -4,11 +4,12 @@ import { MdLocalShipping } from "react-icons/md";
 import { FaRegClock, FaCheckCircle, FaTimesCircle } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { get, put } from "../../../utils/request";
+import { get, post, put } from "../../../utils/request";
 import { formatPrice2 } from "../../../utils/price";
 import { connectSocket, subscribeSocket, unsubscribe } from "../../../utils/socket";
 import { message, Modal, notification } from "antd";
 import ReviewModal from "../ReviewModal";
+import { useChat } from "../../../components/ChatContext";
 
 function MyOrders() {
   const [keyword, setKeyword] = useState("");
@@ -144,6 +145,42 @@ function MyOrders() {
     },
   };
 
+  const handleOpenReview = (order, product) => {
+    setSelectedOrderId(order.id);
+    setSelectedProduct({
+      id: product.productId,
+      name: product.productName,
+      image: product.image,
+    });
+    setReviewOpen(true);
+  };
+
+  const { openChatWithRoom } = useChat();
+  const handleChatWithShop = async (id) => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      notification.warning({
+        message: "Bạn cần đăng nhập",
+        description: "Vui lòng đăng nhập để sử dụng chat",
+      });
+      return;
+    }
+    try {
+      const res = await post("chat/rooms", {
+        shopId: id
+      });
+      const data = await res.json();
+
+      openChatWithRoom(data.id);
+
+    } catch (error) {
+      notification.error({
+        message: "Không thể mở chat",
+      });
+    }
+  };
+
   const renderActions = (order) => {
     switch (order.status) {
       case "PENDING":
@@ -167,9 +204,9 @@ function MyOrders() {
             {/* <button className="myorders__product__btn">
               Hủy đơn
             </button> */}
-            {/* <button className="myorders__product__btn">
+            <button className="myorders__product__btn" onClick={() => handleChatWithShop(order.shopId)}>
               Liên hệ shop
-            </button> */}
+            </button>
             <Link
               to={`/don-hang/${order.id}`}
               className="myorders__product__btn"
@@ -182,9 +219,9 @@ function MyOrders() {
       case "DELIVERING":
         return (
           <>
-            {/* <button className="myorders__product__btn">
+            <button className="myorders__product__btn" onClick={() => handleChatWithShop(order.shopId)}>
               Liên hệ shop
-            </button> */}
+            </button>
             <Link
               to={`/don-hang/${order.id}`}
               className="myorders__product__btn"
@@ -194,27 +231,12 @@ function MyOrders() {
           </>
         );
 
-      // case "DELIVERED":
-      //   return (
-      //     <>
-      //       {/* <button className="myorders__product__btn myorders__product__btn--primary">
-      //         Đã nhận hàng
-      //       </button> */}
-      //       <Link
-      //         to={`/don-hang/${order.id}`}
-      //         className="myorders__product__btn"
-      //       >
-      //         Xem chi tiết
-      //       </Link>
-      //     </>
-      //   );
-
       case "DELIVERED":
         return (
           <>
-            <button className="myorders__product__btn myorders__product__btn--primary">
+            {/* <button className="myorders__product__btn myorders__product__btn--primary">
               Mua lại
-            </button>
+            </button> */}
             <Link
               to={`/don-hang/${order.id}`}
               className="myorders__product__btn"
@@ -249,16 +271,6 @@ function MyOrders() {
           </Link>
         );
     }
-  };
-
-  const handleOpenReview = (order, product) => {
-    setSelectedOrderId(order.id);
-    setSelectedProduct({
-      id: product.productId,
-      name: product.productName,
-      image: product.image,
-    });
-    setReviewOpen(true);
   };
 
   return (

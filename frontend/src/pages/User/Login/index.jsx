@@ -9,9 +9,10 @@ import { LuEye, LuEyeOff } from "react-icons/lu";
 import { IoIosArrowRoundForward } from "react-icons/io";
 import { FcGoogle } from "react-icons/fc";
 import { MdErrorOutline } from "react-icons/md";
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom"
+import { useEffect, useState } from "react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom"
 import { post } from "../../../utils/request";
+import { notification } from "antd";
 
 
 function Login() {
@@ -22,6 +23,7 @@ function Login() {
     password: ""
   });
   const [errors, setErrors] = useState({});
+  const [searchParams] = useSearchParams();
 
   const handleChange = (e) => {
     setFormData(prev => ({
@@ -40,6 +42,18 @@ function Login() {
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
+
+  useEffect(() => {
+    const error = searchParams.get("error");
+
+    if (error === "account_locked") {
+      notification.error({
+        title: "Tài khoản đã bị khóa",
+        description: "Vui lòng liên hệ quản trị viên để hỗ trợ!",
+      });
+      setErrors({ fail: "Tài khoản đã bị khóa" });
+    }
+  }, [searchParams]);
 
   const handleLogin = (e) => {
     e.preventDefault();

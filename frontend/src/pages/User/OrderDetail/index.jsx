@@ -315,12 +315,12 @@ function OrderDetail() {
                   </div>
                 </div>
 
-                {order?.status === "DELIVERING" && (
+                {/* {order?.status === "DELIVERING" && (
                   <button className="received">
                     <FaCircleCheck />
                     Đã nhận hàng
                   </button>
-                )}
+                )} */}
 
                 {/* <button className="contact">
                   Liên hệ người bán

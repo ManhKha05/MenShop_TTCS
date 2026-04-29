@@ -182,13 +182,13 @@ function LayoutShop() {
       label: (
         <div
           style={{ minWidth: 280 }}
-          onClick={() => {
-            // if (item.orderId) {
-            //   navigate(`/shop/orders/${item.orderId}`);
-            // } else {
-            navigate("/shop/orders");
-            // }
-          }}
+          // onClick={() => {
+          //   // if (item.orderId) {
+          //   //   navigate(`/shop/orders/${item.orderId}`);
+          //   // } else {
+          //   navigate("/shop/orders");
+          //   // }
+          // }}
         >
           <div style={{ fontWeight: 600 }}>
             {item.title || (item.type === "NEW_ORDER" ? "Đơn hàng mới" : "Thông báo")}

@@ -2,9 +2,11 @@ package com.ttcs.menshop.modules.product.repository;
 
 import com.ttcs.menshop.modules.product.dto.response.ProductCardResponse;
 import com.ttcs.menshop.modules.product.entity.ProductEntity;
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -85,17 +87,32 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Integer>
             AND NOW() BETWEEN fs.start_time AND fs.end_time
             AND fs.is_disabled = FALSE
         WHERE p.shop_id = :shopId
-        AND (:category IS NULL OR p.category_id = :category)
-        AND p.status = 'ACTIVE'
+          AND (:category IS NULL OR p.category_id = :category)
+          AND p.status = 'ACTIVE'
         ORDER BY
-            CASE WHEN :priceOrder = 'asc' THEN COALESCE(fsp.sale_price, p.sale_price, p.price) END ASC,
-            CASE WHEN :priceOrder = 'desc' THEN COALESCE(fsp.sale_price, p.sale_price, p.price) END DESC,
-            CASE WHEN :priceOrder IS NULL THEN
-                CASE
-                    WHEN :sort = 'newest' THEN p.created_at
-                    WHEN :sort = 'best-selling' THEN p.sold_count
-                    ELSE p.rating_avg
-                END
+            CASE 
+                WHEN :priceOrder = 'asc' 
+                THEN COALESCE(fsp.sale_price, p.sale_price, p.price)
+            END ASC,
+    
+            CASE 
+                WHEN :priceOrder = 'desc' 
+                THEN COALESCE(fsp.sale_price, p.sale_price, p.price)
+            END DESC,
+    
+            CASE 
+                WHEN :priceOrder IS NULL AND :sort = 'newest'
+                THEN p.created_at
+            END DESC,
+    
+            CASE 
+                WHEN :priceOrder IS NULL AND :sort = 'best-selling'
+                THEN p.sold_count
+            END DESC,
+    
+            CASE 
+                WHEN :priceOrder IS NULL AND (:sort IS NULL OR :sort = 'popular')
+                THEN p.rating_avg
             END DESC
         """, nativeQuery = true)
     Page<ProductEntity> getProductsForShop(

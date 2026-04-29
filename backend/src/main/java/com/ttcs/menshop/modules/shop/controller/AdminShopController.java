@@ -48,7 +48,7 @@ public class AdminShopController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable Integer id) {
-        ShopResponse response = shopService.getShopById(id);
+        ShopResponse response = shopService.getShopById(id, "ADMIN");
         return ResponseEntity.ok(response);
     }
 

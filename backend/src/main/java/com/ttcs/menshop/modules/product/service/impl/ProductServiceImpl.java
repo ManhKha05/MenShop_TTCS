@@ -107,8 +107,15 @@ public class ProductServiceImpl implements ProductService {
                 .orElseThrow(() -> new NotFoundException("Not found"));
 
         UserEntity user = authService.getCurrentUser();
+        boolean isCustomer = user.getRoles().size() == 1
+                && user.getRoles().stream()
+                .anyMatch(r -> "CUSTOMER".equals(r.getName()));
 
-        if(user.getRoles().toString().equals("CUSTOMER")){
+        if(isCustomer){
+            if(!p.getShop().getStatus().equals("ACTIVE")){
+                throw new NotFoundException("Sản phẩm bị ẩn");
+            }
+
             p.setViewCount(p.getViewCount() + 1);
             productRepository.save(p);
 

@@ -140,13 +140,13 @@ function Shops() {
     },
   ];
 
-  if (loading) {
-    return (
-      <div className="dashboard-admin dashboard-admin--loading">
-        <Spin size="large" />
-      </div>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <div className="dashboard-admin dashboard-admin--loading">
+  //       <Spin size="large" />
+  //     </div>
+  //   );
+  // }
 
   return (
     <>
@@ -199,7 +199,7 @@ function Shops() {
             <input type="text" placeholder="Tìm tên cửa hàng" onKeyDown={handleSearch} />
           </div>
           <Select
-            defaultValue=""
+            value={status}
             style={{ width: 180 }}
             onChange={(e) => setStatus(e)}
             className="admin-shops__status"
