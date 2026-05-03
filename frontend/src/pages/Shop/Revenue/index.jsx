@@ -216,7 +216,7 @@ function ShopRevenue() {
       ) : (
         <>
           <Row gutter={[16, 16]}>
-            <Col xs={24} sm={12} xl={4}>
+            <Col xs={24} sm={12} xl={6}>
               <Card className="shop-revenue__card">
                 <Statistic
                   title="Tổng doanh thu"
@@ -260,7 +260,7 @@ function ShopRevenue() {
               </Card>
             </Col>
 
-            <Col xs={24} sm={12} xl={4}>
+            <Col xs={24} sm={12} xl={6}>
               <Card className="shop-revenue__card">
                 <Statistic
                   title="Giá trị đơn TB"

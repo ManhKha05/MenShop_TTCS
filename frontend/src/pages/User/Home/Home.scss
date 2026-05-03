@@ -37,11 +37,13 @@
       overflow: hidden;
       margin-bottom: 20px;
       width: 50%;
+      height: 330px;
 
       img {
         width: 100%;
+        height: 100%;
         // aspect-ratio: 16/9;
-        object-fit: contain;
+        object-fit: cover;
       }
     }
   }
@@ -172,12 +174,19 @@
 
       &__image {
         width: 100%;
+        height: 170px;
         object-fit: contain;
       }
 
       &__title {
         font-size: 13px;
         margin-top: 6px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
 
       &__price {

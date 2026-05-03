@@ -254,7 +254,9 @@ public class ShopDashboardRepositoryImpl implements ShopDashboardRepository {
                    p.name,
                    (select pi.imageUrl from ProductImageEntity pi where pi.product.id = p.id order by pi.id asc limit 1),
                    coalesce(sum(oi.quantity), 0),
-                   coalesce(sum(v.stock), 0),
+                   (select coalesce(sum(v2.stock),0)
+                           from ProductVariantEntity v2
+                           where v2.product.id = p.id),
                    coalesce(sum(oi.unitPrice * oi.quantity), 0)
             from OrderItemEntity oi
             join oi.variant v

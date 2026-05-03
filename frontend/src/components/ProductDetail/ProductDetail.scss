@@ -222,6 +222,7 @@
 
     &__row {
       display: flex;
+      flex-wrap: wrap;
 
       &__item {
         width: 50%;

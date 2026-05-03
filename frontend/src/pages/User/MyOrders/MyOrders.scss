@@ -120,6 +120,9 @@
     &__body {
       padding: 20px 0;
       border-bottom: 1px solid #ddd;
+      display: flex;
+      flex-direction: column;
+      gap: 13px;
     }
   }
 

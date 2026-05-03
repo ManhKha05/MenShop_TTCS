@@ -4,10 +4,10 @@ from sqlalchemy import create_engine, text
 class DatabaseHelper:
     def __init__(self):
         self.user = "root"
-        self.password = "06032005"
+        self.password = "322005"
         self.host = "localhost"
         self.port = "3306"
-        self.db_name = "TTCS"
+        self.db_name = "menshop"
 
         self.connection_str = f"mysql+pymysql://{self.user}:{self.password}@{self.host}:{self.port}/{self.db_name}"
         self.engine = create_engine(
