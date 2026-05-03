@@ -65,7 +65,8 @@ public class SecurityConfig {
                                 "/auth/**",
                                 "/oauth2/**",
                                 "/login/oauth2/**",
-                                "/ws"
+                                "/ws",
+                                "/admin/sync/**"
                         ).permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/shop/**").hasRole("SHOP")
