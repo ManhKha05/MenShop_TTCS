@@ -16,12 +16,19 @@ function UserHeader() {
   const [openDrop, setOpenDrop] = useState(false);
   const [openDropAcc, setOpenDropAcc] = useState(false);
   const navigate = useNavigate();
+  const [keyword, setKeyword] = useState("");
 
   const fullname = localStorage.getItem("fullname");
   const avatar = localStorage.getItem("avatar");
 
   const { cartVariants } = useContext(CartContext);
   const token = localStorage.getItem("token");
+
+  const handleSearch = () => {
+      if (!keyword.trim()) return;
+      navigate(`/tim-kiem?keyword=${encodeURIComponent(keyword)}`);
+      setOpenDrop(false);
+    };
 
   const handleCartClick = (e) => {
     if (!token) {
@@ -64,15 +71,21 @@ function UserHeader() {
           </Link>
           <div className="user-header__content">
             <div className="user-header__content-top">
-              <div className="user-header__search">
+            <div className="user-header__search">
                 <IoIosSearch />
                 <input
                   type="text"
-                  placeholder="Điện thoại di động"
+                  placeholder="Áo thun"
+                  value={keyword}
+                  onChange={(e) => setKeyword(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
                   onFocus={() => setOpenDrop(true)}
-                  onBlur={() => setOpenDrop(false)}
+                  onBlur={() => {
+                    setTimeout(() => setOpenDrop(false), 200);
+                  }}
                 ></input>
-                <button>Tìm kiếm</button>
+
+                <button onClick={handleSearch}>Tìm kiếm</button>
 
                 {openDrop && (
                   <>
