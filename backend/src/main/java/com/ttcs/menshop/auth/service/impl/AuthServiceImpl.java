@@ -56,7 +56,7 @@ public class AuthServiceImpl implements AuthService {
 //        }
 
         UserEntity userEntity = new UserEntity();
-        userEntity.setAvatar("https://res.cloudinary.com/dcjraarbb/image/upload/v1775368268/vj9ueejpcaablfaamdk7.webp");
+        userEntity.setAvatar("https://res.cloudinary.com/dcjraarbb/image/upload/v1775784822/avatar-default-user_kcxwvh.webp");
         userEntity.setFullName(request.getFullname());
         userEntity.setEmail(request.getEmail());
         userEntity.setPassword(passwordEncoder.encode(request.getPassword()));
@@ -100,9 +100,29 @@ public class AuthServiceImpl implements AuthService {
             throw new BadRequestException("Người dùng chưa đăng nhập");
         }
 
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-//        UserEntity user = userRepository.findById(5).orElse(null);
+        Object principal = authentication.getPrincipal();
+
+        if (!(principal instanceof CustomUserDetails userDetails)) {
+            throw new BadRequestException("Người dùng chưa đăng nhập");
+        }
+
         return userDetails.getUser();
+    }
+
+    public UserEntity getCurrentUserOrNull() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return null;
+        }
+
+        Object principal = authentication.getPrincipal();
+
+        if (principal instanceof CustomUserDetails userDetails) {
+            return userDetails.getUser();
+        }
+
+        return null;
     }
 
 

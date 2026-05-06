@@ -8,4 +8,5 @@ public interface AuthService {
     void signup(SignupRequest request);
     void resetPassword(ResetPasswordRequest request);
     UserEntity getCurrentUser();
+    UserEntity getCurrentUserOrNull();
 }

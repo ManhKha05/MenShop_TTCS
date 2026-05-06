@@ -83,6 +83,10 @@ public class AuthController {
 
             response.addHeader(HttpHeaders.SET_COOKIE, refreshCookie.toString());
 
+            Integer shopId = userDetails.getUser().getShop() != null
+                    ? userDetails.getUser().getShop().getId()
+                    : null;
+
             return ResponseEntity.ok()
                     .body(new JwtResponse(
                             userDetails.getId(),
@@ -90,7 +94,7 @@ public class AuthController {
                             userDetails.getUsername(),
                             userDetails.getFullname(),
                             userDetails.getAvatar(),
-                            userDetails.getUser().getShop().getId(),
+                            shopId,
                             userDetails.getAuthorities().stream()
                                     .map(GrantedAuthority::getAuthority)
                                     .collect(Collectors.toList())

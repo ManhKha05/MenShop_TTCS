@@ -79,7 +79,7 @@ function UserHeader() {
                   value={keyword}
                   onChange={(e) => setKeyword(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-                  onFocus={() => setOpenDrop(true)}
+                  // onFocus={() => setOpenDrop(true)}
                   onBlur={() => {
                     setTimeout(() => setOpenDrop(false), 200);
                   }}
@@ -87,7 +87,7 @@ function UserHeader() {
 
                 <button onClick={handleSearch}>Tìm kiếm</button>
 
-                {openDrop && (
+                {/* {openDrop && (
                   <>
                     <div className="user-header__search__drop">
                       <div className="user-header__search__drop__item">
@@ -100,7 +100,7 @@ function UserHeader() {
                       </div>
                     </div>
                   </>
-                )}
+                )} */}
               </div>
               <Link to="/" className="user-header__item">
                 <AiOutlineHome className="user-header__item-icon" />

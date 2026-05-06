@@ -106,10 +106,14 @@ public class ProductServiceImpl implements ProductService {
         ProductEntity p = productRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Not found"));
 
-        UserEntity user = authService.getCurrentUser();
-        boolean isCustomer = user.getRoles().size() == 1
-                && user.getRoles().stream()
-                .anyMatch(r -> "CUSTOMER".equals(r.getName()));
+        UserEntity user = authService.getCurrentUserOrNull();
+        boolean isCustomer = false;
+
+        if (user != null) {
+            isCustomer = user.getRoles().size() == 1
+                    && user.getRoles().stream()
+                    .anyMatch(r -> "CUSTOMER".equals(r.getName()));
+        }
 
         if(isCustomer){
             if(!p.getShop().getStatus().equals("ACTIVE")){
