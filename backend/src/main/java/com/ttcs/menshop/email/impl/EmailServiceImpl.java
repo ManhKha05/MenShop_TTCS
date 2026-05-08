@@ -42,6 +42,17 @@ public class EmailServiceImpl implements EmailService {
         mailSender.send(message);
     }
 
+    @Override
+    @Async
+    public void sendSignupOtpEmail(String to, String otp) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(to);
+        message.setSubject("Mã OTP đăng ký tài khoản");
+        message.setText("Mã OTP của bạn là: " + otp + "\nMã có hiệu lực trong 5 phút.");
+
+        mailSender.send(message);
+    }
+
     private String buildOrderStatusContent(String customerName, String orderCode, String status) {
         return switch (status) {
             case "CONFIRMED" -> """

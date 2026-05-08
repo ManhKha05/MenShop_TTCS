@@ -9,6 +9,7 @@ import com.ttcs.menshop.auth.dto.response.JwtResponse;
 import com.ttcs.menshop.auth.entity.UserEntity;
 import com.ttcs.menshop.auth.repository.UserRepository;
 import com.ttcs.menshop.auth.service.AuthService;
+import com.ttcs.menshop.exception.BadRequestException;
 import com.ttcs.menshop.jwt.JwtUtil;
 import com.ttcs.menshop.modules.otp.dto.request.VerifyOtpRequest;
 import com.ttcs.menshop.modules.otp.service.OtpService;
@@ -106,6 +107,15 @@ public class AuthController {
 
     }
 
+    @PostMapping("/send-signup-otp")
+    public ResponseEntity<?> sendSignupOtp(@RequestBody SendOtpRequest request) {
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new BadRequestException("Tài khoản đã tồn tại");
+        }
+        otpService.sendSignupOtp(request.getEmail());
+        return ResponseEntity.ok("Nếu email hợp lệ, mã OTP đã được gửi");
+    }
+
     @PostMapping("/sign-up")
     public ResponseEntity<?> register(@RequestBody SignupRequest request) {
         authService.signup(request);
@@ -124,6 +134,7 @@ public class AuthController {
         String resetToken = jwtUtil.generateResetToken(request.getEmail());
         return ResponseEntity.ok().body(Map.of("resetToken", resetToken));
     }
+
 
     @PostMapping("/reset-password")
     public ResponseEntity<?> sendOtp(@RequestBody ResetPasswordRequest request) {

@@ -13,6 +13,7 @@ import { IoPersonAddSharp } from "react-icons/io5";
 import { post } from "../../../utils/request";
 import { notification } from "antd";
 import { MdEmail } from "react-icons/md";
+import { Modal, Input } from "antd";
 
 
 function Signup() {
@@ -27,6 +28,10 @@ function Signup() {
   });
   const [errors, setErrors] = useState({});
 
+  const [openOtpModal, setOpenOtpModal] = useState(false);
+  const [otp, setOtp] = useState("");
+  const [submittingOtp, setSubmittingOtp] = useState(false);
+
   const handleChange = (e) => {
     setFormData(prev => ({
       ...prev,
@@ -38,7 +43,6 @@ function Signup() {
     const newErrors = {};
     if (!formData.fullname.trim()) newErrors.fullname = "Vui lòng nhập họ và tên";
     if (!formData.email.trim()) newErrors.email = "Vui lòng nhập email";
-    // if (!formData.username.trim()) newErrors.username = "Vui lòng nhập tên đăng nhập";
     if (!formData.password) newErrors.password = "Vui lòng nhập mật khẩu";
     else if (formData.password.length < 8) newErrors.password = "Mật khẩu phải có ít nhất 8 ký tự";
     if (formData.confirmPassword !== formData.password) newErrors.confirmPassword = "Mật khẩu không khớp";
@@ -46,35 +50,71 @@ function Signup() {
     return Object.keys(newErrors).length === 0;
   }
 
-  const handleSignUp = (e) => {
+  const handleSignUp = async (e) => {
     e.preventDefault();
 
     if (!validate()) return;
-    console.log(formData);
 
-    const fetchApi = async () => {
-      try {
-        const res = await post("auth/sign-up", formData);
+    try {
+      const res = await post("auth/send-signup-otp", {
+        email: formData.email
+      });
 
-        if (!res.ok) {
-          const err = await res.json();
-          throw err.message;
-        }
-
-        notificationApi.success({
-          title: "Đăng ký thành công",
-          description: "Bạn đã tạo tài khoản thành công, hãy đăng nhập ngay!"
-        });
-      } catch (error) {
-        console.error(error);
-        notificationApi.error({
-          title: "Đăng ký thất bại",
-          description: error || "Có lỗi xảy ra, thử lại sau"
-        });
+      if (!res.ok) {
+        const err = await res.json();
+        throw err.message;
       }
+
+      notificationApi.success({
+        message: "Đã gửi OTP",
+        description: "Nếu email hợp lệ, vui lòng kiểm tra email để lấy mã xác thực"
+      });
+
+      setOpenOtpModal(true);
+    } catch (error) {
+      notificationApi.error({
+        message: "Gửi OTP thất bại",
+        description: error || "Có lỗi xảy ra"
+      });
     }
-    fetchApi();
-  }
+  };
+
+  const handleVerifyOtp = async () => {
+    if (!otp.trim()) {
+      notificationApi.error({
+        message: "Vui lòng nhập OTP"
+      });
+      return;
+    }
+
+    setSubmittingOtp(true);
+
+    try {
+      const res = await post("auth/sign-up", {
+        ...formData,
+        otp: otp
+      });
+
+      if (!res.ok) {
+        const err = await res.json();
+        throw err.message;
+      }
+
+      notificationApi.success({
+        message: "Đăng ký thành công",
+        description: "Bạn đã tạo tài khoản thành công, hãy đăng nhập ngay!"
+      });
+
+      setOpenOtpModal(false);
+    } catch (error) {
+      notificationApi.error({
+        message: "Xác thực OTP thất bại",
+        description: error || "OTP không đúng hoặc đã hết hạn"
+      });
+    } finally {
+      setSubmittingOtp(false);
+    }
+  };
 
   return (
     <>
@@ -142,7 +182,7 @@ function Signup() {
               Email
             </label>
             <div className={"signup-form__input " + (errors.email && "signup-form__input-error")}>
-              <MdEmail  className="signup-form__input__icon" />
+              <MdEmail className="signup-form__input__icon" />
               <input
                 type="text"
                 placeholder="abc@gmail.com"
@@ -255,6 +295,27 @@ function Signup() {
           </div>
         </div>
       </div>
+
+      <Modal
+        title="Xác thực email"
+        open={openOtpModal}
+        onOk={handleVerifyOtp}
+        onCancel={() => setOpenOtpModal(false)}
+        okText="Xác thực"
+        cancelText="Hủy"
+        confirmLoading={submittingOtp}
+      >
+        <p>Mã OTP đã được gửi tới email:</p>
+        <b>{formData.email}</b>
+
+        <Input
+          style={{ marginTop: 16 }}
+          placeholder="Nhập mã OTP"
+          value={otp}
+          onChange={(e) => setOtp(e.target.value)}
+          maxLength={6}
+        />
+      </Modal>
     </>
   )
 }

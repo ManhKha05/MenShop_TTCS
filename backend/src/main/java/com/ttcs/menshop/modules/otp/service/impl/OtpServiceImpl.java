@@ -44,6 +44,20 @@ public class OtpServiceImpl implements OtpService {
         emailService.sendOtpEmail(email, otp);
     }
 
+    @Override
+    public void sendSignupOtp(String email) {
+        String otp = String.valueOf((int)(Math.random() * 900000) + 100000);
+
+        OtpEntity otpEntity = new OtpEntity();
+        otpEntity.setEmail(email);
+        otpEntity.setOtp(otp);
+        otpEntity.setExpired_at(LocalDateTime.now().plusMinutes(5));
+        otpEntity.setUsed(false);
+        otpRepository.save(otpEntity);
+
+        emailService.sendSignupOtpEmail(email, otp);
+    }
+
     @Transactional
     @Override
     public void verifyOtp(String email, String otp) {

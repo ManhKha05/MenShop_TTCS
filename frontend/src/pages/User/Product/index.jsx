@@ -29,9 +29,10 @@ function Product() {
   const [totalReview, setTotalReview] = useState(0);
   const [reviews, setReviews] = useState([]);
 
-  const { addVariant, token } = useContext(CartContext);
+  const { addVariant} = useContext(CartContext);
   const [recommendations, setRecommendations] = useState([]);
 
+  const token = localStorage.getItem("token");
   const { openChatWithRoom } = useChat();
 
   const fetchProduct = async () => {
@@ -126,6 +127,7 @@ function Product() {
     if (value > maxStock) value = maxStock;
     setQuantity(value);
   };
+
 
   const handleAddToCart = async () => {
     if (!token) {
@@ -236,7 +238,6 @@ function Product() {
   };
 
   const handleChatWithShop = async () => {
-    const token = localStorage.getItem("token");
 
     if (!token) {
       notification.warning({

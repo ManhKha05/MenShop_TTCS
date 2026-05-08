@@ -21,7 +21,7 @@ function Search() {
 
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 10;
+  const pageSize = 15;
 
   useEffect(() => {
     if (!keyword) return;
@@ -32,10 +32,10 @@ function Search() {
         const response = await get(`search?keyword=${keyword}&page=0&size=60`);
 
         if (!response.ok) {
-           console.log("Không tìm thấy dữ liệu hoặc lỗi server");
-           setOriginalProducts([]);
-           setDisplayProducts([]);
-           return;
+          console.log("Không tìm thấy dữ liệu hoặc lỗi server");
+          setOriginalProducts([]);
+          setDisplayProducts([]);
+          return;
         }
 
         const data = await response.json();
@@ -157,34 +157,41 @@ function Search() {
             </div>
           </div>
 
-        {loading ? (
-          <div className="search__loading">
-            <Spin size="large" tip="Đang tìm kiếm sản phẩm..." />
-          </div>
-        ) : currentProducts.length > 0 ? (
-          <div className="product__list">
-            {currentProducts.map((product) => (
-              <ProductItem key={product.id} data={product} />
-            ))}
-          </div>
-        ) : (
-          <div className="search__empty">
-            <div className="search__empty__content">
-              <img
-                src="https://cdn-icons-png.flaticon.com/512/6134/6134065.png"
-                alt="not found"
-                style={{ width: 120, marginBottom: 20, opacity: 0.6 }}
-              />
-              <h3>Rất tiếc, không tìm thấy sản phẩm liên quan đến "{keyword}"</h3>
-              <p>Vui lòng thử lại với từ khóa khác hoặc kiểm tra lại bộ lọc.</p>
+          {loading ? (
+            <div className="search__loading">
+              <Spin size="large" tip="Đang tìm kiếm sản phẩm..." />
             </div>
-          </div>
-        )}
+          ) : currentProducts.length > 0 ? (
+            <div className="product__list">
+              {currentProducts.map((product) => (
+                <ProductItem key={product.id} data={product} />
+              ))}
+            </div>
+          ) : (
+            <div className="search__empty">
+              <div className="search__empty__content">
+                <img
+                  src="https://cdn-icons-png.flaticon.com/512/6134/6134065.png"
+                  alt="not found"
+                  style={{ width: 120, marginBottom: 20, opacity: 0.6 }}
+                />
+                <h3>Rất tiếc, không tìm thấy sản phẩm liên quan đến "{keyword}"</h3>
+                <p>Vui lòng thử lại với từ khóa khác hoặc kiểm tra lại bộ lọc.</p>
+              </div>
+            </div>
+          )}
 
           {displayProducts.length > 0 && (
             <Pagination
               current={currentPage}
-              onChange={(page) => setCurrentPage(page)}
+              onChange={(page) => {
+                setCurrentPage(page);
+
+                window.scrollTo({
+                  top: 0,
+                  behavior: "smooth"
+                });
+              }}
               pageSize={pageSize}
               total={displayProducts.length}
               align="center"

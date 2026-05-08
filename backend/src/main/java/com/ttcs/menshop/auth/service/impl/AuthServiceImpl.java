@@ -9,6 +9,7 @@ import com.ttcs.menshop.auth.service.AuthService;
 import com.ttcs.menshop.email.EmailService;
 import com.ttcs.menshop.exception.BadRequestException;
 import com.ttcs.menshop.modules.otp.repository.OtpRepository;
+import com.ttcs.menshop.modules.otp.service.OtpService;
 import com.ttcs.menshop.security.CustomUserDetails;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -25,6 +26,7 @@ import java.util.Set;
 @Service
 public class AuthServiceImpl implements AuthService {
 
+    private final OtpService otpService;
     @Value("${jwt.secret}")
     private String jwtSecret;
 
@@ -34,26 +36,19 @@ public class AuthServiceImpl implements AuthService {
     private final RoleRepository roleRepository;
     private final OtpRepository otpRepository;
 
-    public AuthServiceImpl(UserRepository userRepository, EmailService emailService, PasswordEncoder passwordEncoder, RoleRepository roleRepository, OtpRepository otpRepository) {
+    public AuthServiceImpl(UserRepository userRepository, EmailService emailService, PasswordEncoder passwordEncoder, RoleRepository roleRepository, OtpRepository otpRepository, OtpService otpService) {
         this.userRepository = userRepository;
         this.emailService = emailService;
         this.passwordEncoder = passwordEncoder;
         this.roleRepository = roleRepository;
         this.otpRepository = otpRepository;
+        this.otpService = otpService;
     }
 
     @Transactional
     @Override
     public void signup(SignupRequest request) {
-        boolean existEmail = userRepository.existsByEmail(request.getEmail());
-        if (existEmail) {
-            throw new BadRequestException("Tài khoản đã tồn tại");
-        }
-
-//        boolean existUsername = userRepository.existsByUsername(request.getUsername());
-//        if (existUsername) {
-//            throw new BadRequestException("Tên đăng nhập đã tồn tại");
-//        }
+        otpService.verifyOtp(request.getEmail(), request.getOtp());
 
         UserEntity userEntity = new UserEntity();
         userEntity.setAvatar("https://res.cloudinary.com/dcjraarbb/image/upload/v1775784822/avatar-default-user_kcxwvh.webp");
