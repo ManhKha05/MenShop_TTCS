@@ -195,4 +195,26 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Integer>
     );
 
     List<ProductEntity> findByIdIn(List<Integer> ids);
+
+    @Query("""
+                SELECT p
+                FROM ProductEntity p
+                WHERE p.status = 'ACTIVE'
+                ORDER BY p.soldCount DESC
+            """)
+    List<ProductEntity> getBestSeller(Pageable pageable);
+
+    @Query("""
+                SELECT p
+                FROM ProductEntity p
+                WHERE p.category.id = :categoryId
+                  AND p.id != :currentProductId
+                  AND p.status = 'ACTIVE'
+                ORDER BY p.soldCount DESC
+            """)
+    List<ProductEntity> findSimilarProductsByCategory(
+            @Param("categoryId") Integer categoryId,
+            @Param("currentProductId") Integer currentProductId,
+            Pageable pageable
+    );
 }

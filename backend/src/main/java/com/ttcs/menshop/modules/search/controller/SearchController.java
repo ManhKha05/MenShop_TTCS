@@ -33,8 +33,8 @@ public class SearchController {
             return ResponseEntity.ok(Page.empty());
         }
 
-        if (size > 48) {
-            size = 48;
+        if (size > 60) {
+            size = 60;
         }
 
         long startTime = System.currentTimeMillis();

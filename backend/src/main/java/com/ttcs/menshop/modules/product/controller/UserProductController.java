@@ -1,5 +1,6 @@
 package com.ttcs.menshop.modules.product.controller;
 
+import com.ttcs.menshop.auth.entity.UserEntity;
 import com.ttcs.menshop.auth.service.AuthService;
 import com.ttcs.menshop.modules.product.dto.response.ProductDetailResponse;
 import com.ttcs.menshop.modules.product.dto.response.ProductResponse;
@@ -32,21 +33,18 @@ public class UserProductController {
 
     @GetMapping("/recommendations/home")
     public ResponseEntity<List<ProductResponse>> getHomeRecs() {
-        Integer userId = authService.getCurrentUser().getId();
-        if (userId != null ) {
-            return ResponseEntity.ok(recommendationService.getHomeRecommendations(userId));
+        UserEntity currentUser = authService.getCurrentUser();
+        if (currentUser != null && currentUser.getId() != null) {
+            return ResponseEntity.ok(recommendationService.getHomeRecommendations(currentUser.getId()));
         } else {
-            return ResponseEntity.ok(List.of());
+            return ResponseEntity.ok(recommendationService.getBestSeller());
         }
     }
 
     @GetMapping("/recommendations/detail")
     public ResponseEntity<List<ProductResponse>> getDetailRecs(@RequestParam Integer productId) {
-        Integer userId = authService.getCurrentUser().getId();
-        if (userId != null) {
-            return ResponseEntity.ok(recommendationService.getDetailRecommendations(userId, productId));
-        } else {
-            return ResponseEntity.ok(List.of());
-        }
+        UserEntity currentUser = authService.getCurrentUser();
+        Integer userId = (currentUser != null) ? currentUser.getId() : null;
+        return ResponseEntity.ok(recommendationService.getDetailRecommendations(userId, productId));
     }
 }

@@ -14,49 +14,89 @@ function Search() {
   const [showSort, setShowSort] = useState(false);
   const [sort, setSort] = useState({ value: "default", title: "Phổ biến" });
 
-  const [products, setProducts] = useState([]);
+  const [filters, setFilters] = useState({ minStar: null, minPrice: null, maxPrice: null });
+
+  const [originalProducts, setOriginalProducts] = useState([]);
+  const [displayProducts, setDisplayProducts] = useState([]);
+
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 10;
-  const [totalElements, setTotalElements] = useState(0);
 
   useEffect(() => {
-      setCurrentPage(1);
-    }, [keyword]);
+    if (!keyword) return;
 
-  useEffect(() => {
-      if (!keyword) return;
+    const fetchProducts = async () => {
+      setLoading(true);
+      try {
+        const response = await get(`search?keyword=${keyword}&page=0&size=60`);
 
-      const fetchProducts = async () => {
-        setLoading(true);
-        try {
-          const response = await get(`search?keyword=${keyword}&page=${currentPage - 1}&size=${pageSize}`);
-
-          if (!response.ok) {
-             console.log("Không tìm thấy dữ liệu hoặc lỗi server");
-             setProducts([]);
-             return;
-          }
-
-          const data = await response.json();
-
-          setProducts(data.content);
-          setTotalElements(data.totalElements);
-
-        } catch (error) {
-          console.error("Lỗi khi fetch tìm kiếm:", error);
-        } finally {
-          setLoading(false);
+        if (!response.ok) {
+           console.log("Không tìm thấy dữ liệu hoặc lỗi server");
+           setOriginalProducts([]);
+           setDisplayProducts([]);
+           return;
         }
-      };
 
-      fetchProducts();
-    }, [keyword, currentPage]);
+        const data = await response.json();
+
+        setOriginalProducts(data.content);
+        setDisplayProducts(data.content);
+
+        setCurrentPage(1);
+        setSort({ value: "default", title: "Phổ biến" });
+        setFilters({ minStar: null, minPrice: null, maxPrice: null });
+
+      } catch (error) {
+        console.error("Lỗi khi fetch tìm kiếm:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, [keyword]);
+
+  useEffect(() => {
+    if (originalProducts.length === 0) {
+      setDisplayProducts([]);
+      return;
+    }
+
+    let processedList = [...originalProducts];
+    const getActualPrice = (item) => item.salePrice ? item.salePrice : item.price;
+
+    if (filters.minPrice !== null) {
+      processedList = processedList.filter(item => getActualPrice(item) >= filters.minPrice);
+    }
+    if (filters.maxPrice !== null) {
+      processedList = processedList.filter(item => getActualPrice(item) <= filters.maxPrice);
+    }
+    if (filters.minStar !== null) {
+      processedList = processedList.filter(item => (item.ratingAvg || 0) >= filters.minStar);
+    }
+
+    if (sort.value === "price_asc") {
+      processedList.sort((a, b) => getActualPrice(a) - getActualPrice(b));
+    } else if (sort.value === "price_desc") {
+      processedList.sort((a, b) => getActualPrice(b) - getActualPrice(a));
+    } else if (sort.value === "top_seller") {
+      processedList.sort((a, b) => (b.soldCount || 0) - (a.soldCount || 0));
+    }
+
+    setDisplayProducts(processedList);
+    setCurrentPage(1);
+
+  }, [sort, filters, originalProducts]);
+
+  const currentProducts = displayProducts.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize
+  );
 
   const sortOptions = [
     { value: "default", title: "Phổ biến" },
     { value: "top_seller", title: "Bán chạy" },
-    { value: "newest", title: "Hàng mới" },
     { value: "price_asc", title: "Giá thấp đến cao" },
     { value: "price_desc", title: "Giá cao đến thấp" },
   ];
@@ -81,7 +121,7 @@ function Search() {
               {loading ? (
                 <span>Đang tìm kiếm...</span>
               ) : (
-                <span>Tìm thấy {totalElements} sản phẩm liên quan đến "{keyword}"</span>
+                <span>Tìm thấy {displayProducts.length} sản phẩm liên quan đến "{keyword}"</span>
               )}
             </div>
             <div className="search__filter">
@@ -111,7 +151,9 @@ function Search() {
                 )}
               </div>
               <span style={{ color: 'rgb(128, 128, 137)' }} >Bộ lọc</span>
-              <ModalFilter />
+
+              <ModalFilter onApplyFilter={(newFilters) => setFilters(newFilters)} />
+
             </div>
           </div>
 
@@ -119,9 +161,9 @@ function Search() {
           <div className="search__loading">
             <Spin size="large" tip="Đang tìm kiếm sản phẩm..." />
           </div>
-        ) : products.length > 0 ? (
+        ) : currentProducts.length > 0 ? (
           <div className="product__list">
-            {products.map((product) => (
+            {currentProducts.map((product) => (
               <ProductItem key={product.id} data={product} />
             ))}
           </div>
@@ -134,20 +176,21 @@ function Search() {
                 style={{ width: 120, marginBottom: 20, opacity: 0.6 }}
               />
               <h3>Rất tiếc, không tìm thấy sản phẩm liên quan đến "{keyword}"</h3>
-              <p>Vui lòng thử lại với từ khóa khác hoặc kiểm tra lỗi chính tả.</p>
+              <p>Vui lòng thử lại với từ khóa khác hoặc kiểm tra lại bộ lọc.</p>
             </div>
           </div>
         )}
 
-          {products.length > 0 && (
+          {displayProducts.length > 0 && (
             <Pagination
               current={currentPage}
               onChange={(page) => setCurrentPage(page)}
               pageSize={pageSize}
-              total={totalElements}
+              total={displayProducts.length}
               align="center"
               size="large"
               className="search__pagination"
+              showSizeChanger={false}
             />
           )}
         </div>

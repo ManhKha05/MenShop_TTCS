@@ -2,9 +2,9 @@ from fastapi import FastAPI
 import uvicorn
 from contextlib import asynccontextmanager
 from app.api import rec_router
-# from app.api import search_router
+from app.api import search_router
 from app.models.recommendation.rec_setup import load_and_train_models
-# from app.models.search.search_setup import load_ai_model
+from app.models.search.search_setup import load_ai_model
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -23,8 +23,8 @@ async def lifespan(app: FastAPI):
         app.state.p_map = p_map
         app.state.inv_u_map = inv_u_map
 
-        # ai_model = load_ai_model()
-        # app.state.ai_model = ai_model
+        ai_model = load_ai_model()
+        app.state.ai_model = ai_model
 
         print("Server AI đã khởi động xong. Sẵn sàng nhận Request ở Cổng 8000!")
     except Exception as e:
@@ -42,7 +42,7 @@ app = FastAPI(
 )
 
 app.include_router(rec_router.router, prefix="/api/recommend", tags=["Recommendation"])
-# app.include_router(search_router.router, prefix="/api/search", tags=["Smart Search"])
+app.include_router(search_router.router, prefix="/api/search", tags=["Smart Search"])
 
 if __name__ == "__main__":
     uvicorn.run("app.main:app", host="127.0.0.1", port=8000, reload=True)

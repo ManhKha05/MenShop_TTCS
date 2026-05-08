@@ -35,7 +35,7 @@ public class SmartSearchService {
 
     public Page<ProductDocument> searchSmart(String rawKeyword, int page, int size) {
         String keyword = optimizeKeyword(rawKeyword);
-        int safeSize = Math.min(size, 20);
+        int safeSize = Math.min(size, 60);
         int fetchSize = 60;
         long startTime = System.currentTimeMillis();
 
