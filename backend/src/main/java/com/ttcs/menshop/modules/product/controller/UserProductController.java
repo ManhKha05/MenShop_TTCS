@@ -33,7 +33,7 @@ public class UserProductController {
 
     @GetMapping("/recommendations/home")
     public ResponseEntity<List<ProductResponse>> getHomeRecs() {
-        UserEntity currentUser = authService.getCurrentUser();
+        UserEntity currentUser = authService.getCurrentUserOrNull();
         if (currentUser != null && currentUser.getId() != null) {
             return ResponseEntity.ok(recommendationService.getHomeRecommendations(currentUser.getId()));
         } else {
@@ -43,7 +43,7 @@ public class UserProductController {
 
     @GetMapping("/recommendations/detail")
     public ResponseEntity<List<ProductResponse>> getDetailRecs(@RequestParam Integer productId) {
-        UserEntity currentUser = authService.getCurrentUser();
+        UserEntity currentUser = authService.getCurrentUserOrNull();
         Integer userId = (currentUser != null) ? currentUser.getId() : null;
         return ResponseEntity.ok(recommendationService.getDetailRecommendations(userId, productId));
     }
