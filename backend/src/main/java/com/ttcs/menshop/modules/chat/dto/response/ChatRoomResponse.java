@@ -20,6 +20,7 @@ public class ChatRoomResponse {
 
     private Integer lastSenderId;
     private String lastMessage;
+    private String lastMessageType;
     private LocalDateTime lastMessageAt;
 
     private Integer unreadCount;

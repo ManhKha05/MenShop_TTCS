@@ -98,14 +98,16 @@ public class CharServiceImpl implements ChatService {
 
         ChatRoomEntity room = getRoomAndCheckPermission(request.getRoomId(), currentUser);
 
-        if (request.getContent() == null || request.getContent().trim().isEmpty()) {
+        if ((request.getContent() == null || request.getContent().trim().isEmpty()) && request.getImageUrl() == null) {
             throw new BadRequestException("Nội dung tin nhắn không được để trống");
         }
 
         ChatMessageEntity message =ChatMessageEntity.builder()
                         .room(room)
                         .sender(currentUser)
-                        .content(request.getContent().trim())
+                        .content(request.getContent() != null ? request.getContent().trim() : null)
+                        .type(request.getType())
+                        .imageUrl(request.getImageUrl())
                         .isRead(false)
                         .createdAt(LocalDateTime.now())
                         .build();
@@ -165,6 +167,7 @@ public class CharServiceImpl implements ChatService {
                 .findFirstByRoomIdOrderByCreatedAtDesc(room.getId());
 
         Integer lastSenderId = null;
+        String lastMessageType = null;
         String lastMessageContent = null;
         LocalDateTime lastMessageAt = null;
 
@@ -172,6 +175,7 @@ public class CharServiceImpl implements ChatService {
             if (lastMessage.getSender() != null) {
                 lastSenderId = lastMessage.getSender().getId();
             }
+            lastMessageType = lastMessage.getImageUrl() != null ? "IMAGE" : "TEXT";
             lastMessageContent = lastMessage.getContent();
             lastMessageAt = lastMessage.getCreatedAt();
         } else {
@@ -191,6 +195,7 @@ public class CharServiceImpl implements ChatService {
                 .shopLogo(room.getShop().getLogo())
 
                 .lastSenderId(lastSenderId)
+                .lastMessageType(lastMessageType)
                 .lastMessage(lastMessageContent)
                 .lastMessageAt(lastMessageAt)
 
@@ -221,6 +226,8 @@ public class CharServiceImpl implements ChatService {
                 .senderName(name)
                 .senderAvatar(avatar)
 
+                .type(message.getType())
+                .imageUrl(message.getImageUrl())
                 .content(message.getContent())
                 .isRead(message.getIsRead())
                 .createdAt(message.getCreatedAt())

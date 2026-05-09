@@ -27,8 +27,14 @@ public class ChatMessageEntity {
     @JoinColumn(name = "sender_id", nullable = false)
     private UserEntity sender;
 
-    @Column(name = "content", columnDefinition = "TEXT", nullable = false)
+    @Column(name = "content", columnDefinition = "TEXT")
     private String content;
+
+    @Column(name = "type")
+    private String type;
+
+    @Column(name = "image_url")
+    private String imageUrl;
 
     @Column(name = "is_read")
     private Boolean isRead;

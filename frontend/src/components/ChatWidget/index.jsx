@@ -15,6 +15,8 @@ import { get, patch, post } from "../../utils/request"
 import { HiChatBubbleLeftRight } from "react-icons/hi2";
 import "./ChatWidget.scss";
 import { connectSocket, disconnectSocket, subscribeSocket, getClient } from "../../utils/socket";
+import { Image, Upload } from "antd";
+import { PictureOutlined } from "@ant-design/icons";
 
 import { useChat } from "../ChatContext";
 
@@ -34,6 +36,7 @@ export default function ChatWidget() {
   const bottomRef = useRef(null);
 
   const roles = JSON.parse(localStorage.getItem("roles") || "[]");
+  const userId = localStorage.getItem("userId");
 
   const isShop = roles.includes("ROLE_SHOP");
 
@@ -67,7 +70,24 @@ export default function ChatWidget() {
       const res = await get("chat/rooms");
       const data = await res.json();
 
-      setRooms(data || []);
+      console.log(data);
+
+      setRooms(
+        (data || []).map((r) => {
+          const lastText =
+            r.lastMessageType === "IMAGE"
+              ? "Đã gửi một ảnh"
+              : r.lastMessage || "Chưa có tin nhắn";
+
+          return {
+            ...r,
+            lastMessage:
+              Number(r.lastSenderId) === Number(userId)
+                ? `Bạn: ${lastText}`
+                : lastText,
+          };
+        })
+      );
 
       if (activeRoomId) {
         const found = data.find((r) => r.id === activeRoomId);
@@ -104,6 +124,45 @@ export default function ChatWidget() {
     }
   };
 
+  const handleSendImage = async (file) => {
+    if (!activeRoom) return false;
+
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", "chat_image");
+
+    try {
+      setSending(true);
+
+      const cloudRes = await fetch(
+        "https://api.cloudinary.com/v1_1/dcjraarbb/image/upload",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      const cloudData = await cloudRes.json();
+
+      const res = await post("chat/messages", {
+        roomId: activeRoom.id,
+        type: "IMAGE",
+        imageUrl: cloudData.secure_url,
+        content: null,
+      });
+
+      await res.json();
+    } catch (error) {
+      notification.error({
+        message: "Gửi ảnh thất bại",
+      });
+    } finally {
+      setSending(false);
+    }
+
+    return false;
+  };
+
   const handleSend = async () => {
     if (!activeRoom) return;
 
@@ -114,7 +173,9 @@ export default function ChatWidget() {
       setSending(true);
       const res = await post("chat/messages", {
         roomId: activeRoom.id,
-        content: text
+        type: "TEXT",
+        content: text,
+        imageUrl: null
       });
 
       const newMessage = await res.json();
@@ -122,33 +183,33 @@ export default function ChatWidget() {
       // setMessages((prev) => [...prev, newMessage.senderId !== userId && newMessage]);
       setContent("");
 
-      setRooms((prev) => {
-        const updatedRooms = prev.map((room) =>
-          room.id === newMessage.roomId
-            ? {
-              ...room,
-              lastMessage: newMessage.content,
-              lastMessageAt: newMessage.createdAt,
-              unreadCount:
-                activeRoom?.id === newMessage.roomId
-                  ? 0
-                  : (room.unreadCount || 0) + 1,
-            }
-            : room
-        );
+      // setRooms((prev) => {
+      //   const updatedRooms = prev.map((room) =>
+      //     room.id === newMessage.roomId
+      //       ? {
+      //         ...room,
+      //         lastMessage: newMessage.content,
+      //         lastMessageAt: newMessage.createdAt,
+      //         unreadCount:
+      //           activeRoom?.id === newMessage.roomId
+      //             ? 0
+      //             : (room.unreadCount || 0) + 1,
+      //       }
+      //       : room
+      //   );
 
-        const changedRoom = updatedRooms.find(
-          (room) => room.id === newMessage.roomId
-        );
+      //   const changedRoom = updatedRooms.find(
+      //     (room) => room.id === newMessage.roomId
+      //   );
 
-        const otherRooms = updatedRooms.filter(
-          (room) => room.id !== newMessage.roomId
-        );
+      //   const otherRooms = updatedRooms.filter(
+      //     (room) => room.id !== newMessage.roomId
+      //   );
 
-        return changedRoom
-          ? [changedRoom, ...otherRooms]
-          : updatedRooms;
-      });
+      //   return changedRoom
+      //     ? [changedRoom, ...otherRooms]
+      //     : updatedRooms;
+      // });
     } catch (error) {
       notification.error({
         message: "Gửi tin nhắn thất bại",
@@ -177,11 +238,7 @@ export default function ChatWidget() {
     0
   );
 
-  console.log("rooms", rooms);
-  console.log("messages", messages)
-
   useEffect(() => {
-    const userId = localStorage.getItem("userId");
     let subscription;
 
     connectSocket(() => {
@@ -204,9 +261,9 @@ export default function ChatWidget() {
               ? {
                 ...room,
                 lastMessage:
-            newMessage.senderId === userId
-              ? `Bạn: ${newMessage.content}`
-              : newMessage.content,
+                  Number(newMessage.senderId) === Number(userId)
+                    ? `Bạn: ${getLastMessageText(newMessage)}`
+                    : getLastMessageText(newMessage),
                 lastMessageAt: newMessage.createdAt,
                 unreadCount:
                   activeRoom?.id === newMessage.roomId
@@ -235,6 +292,13 @@ export default function ChatWidget() {
       subscription?.unsubscribe();
     };
   }, [open, activeRoom]);
+
+  const getLastMessageText = (msg) => {
+    if (msg.type === "IMAGE") {
+      return "Đã gửi một ảnh";
+    }
+    return msg.content;
+  };
 
   return (
     <>
@@ -360,8 +424,24 @@ export default function ChatWidget() {
                               </Avatar>
                             )}
 
-                            <div className="chat-message-bubble">
-                              <Text>{msg.content}</Text>
+                            <div className={`chat-message-bubble ${msg.type === "IMAGE" && "img"}`}>
+                              {msg.type === "IMAGE" ? (
+                                <Image
+                                  src={msg.imageUrl}
+                                  width={160}
+                                  style={{ borderRadius: 8 }}
+                                  onLoad={() => {
+                                    setTimeout(() => {
+                                      bottomRef.current?.scrollIntoView({
+                                        behavior: "smooth",
+                                        block: "end",
+                                      });
+                                    }, 0);
+                                  }}
+                                />
+                              ) : (
+                                <Text>{msg.content}</Text>
+                              )}
                             </div>
                           </div>
                         );
@@ -372,6 +452,13 @@ export default function ChatWidget() {
                   </div>
 
                   <div className="chat-input">
+                    <Upload
+                      showUploadList={false}
+                      beforeUpload={handleSendImage}
+                      accept="image/*"
+                    >
+                      <Button icon={<PictureOutlined />} />
+                    </Upload>
                     <Input.TextArea
                       value={content}
                       onChange={(e) => setContent(e.target.value)}

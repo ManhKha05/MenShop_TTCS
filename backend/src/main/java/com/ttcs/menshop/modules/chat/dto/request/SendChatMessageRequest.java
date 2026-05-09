@@ -6,4 +6,6 @@ import lombok.Data;
 public class SendChatMessageRequest {
     private Integer roomId;
     private String content;
+    private String type;
+    private String imageUrl;
 }

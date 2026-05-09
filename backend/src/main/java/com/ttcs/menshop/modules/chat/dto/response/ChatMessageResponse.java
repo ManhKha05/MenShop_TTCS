@@ -15,6 +15,8 @@ public class ChatMessageResponse {
     private String senderName;
     private String senderAvatar;
 
+    private String type;
+    private String imageUrl;
     private String content;
     private Boolean isRead;
     private LocalDateTime createdAt;
