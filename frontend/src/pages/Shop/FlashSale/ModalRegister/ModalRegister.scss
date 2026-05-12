@@ -1,6 +1,9 @@
 .flashsale-shop {
 
   .modal {
+    .title {
+      margin: 0;
+    }
 
     .info {
       display: flex;
@@ -24,7 +27,7 @@
 
     .actions {
       text-align: end;
-      margin-top: 20px;
+      // margin-top: 20px;
 
       button {
         margin: 0 10px;

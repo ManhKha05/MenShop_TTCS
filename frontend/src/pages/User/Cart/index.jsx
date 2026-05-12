@@ -116,6 +116,8 @@ function Cart() {
     }
   };
 
+  console.log("selected", cart);
+
   const selectedCartItems = cart.flatMap(shop =>
     shop.cartItems
       .filter(item => checkedItems[item.cartItemId])
@@ -123,6 +125,7 @@ function Cart() {
         ...item,
         shopId: shop.shopId,
         shopName: shop.shopName,
+        shopLogo: shop.shopLogo
       }))
   );
 
@@ -133,10 +136,6 @@ function Cart() {
 
     return uniqueShopIds.size;
   }, [selectedCartItems]);
-
-  const shippingFee = useMemo(() => {
-    return shopCount * 35000;
-  }, [shopCount]);
 
   const handleCheckout = () => {
     localStorage.setItem("checkoutItems", JSON.stringify(selectedCartItems));
@@ -261,14 +260,14 @@ function Cart() {
 
                     <div className="cart-summary__row">
                       <span>Phí vận chuyển {shopCount > 1 ? `(${shopCount} shop)` : ""}</span>
-                      <span className="cart-summary__value ">{formatPrice(shippingFee)}</span>
+                      <span className="cart-summary__value ">Chưa xác định</span>
                     </div>
-                    <div style={{ opacity: 0.6, color: "red" }}>Phí vận chuyển tạm tính, sẽ được xác nhận tại bước thanh toán.</div>
+                    <div style={{ opacity: 0.6, color: "red" }}>Phí vận chuyển sẽ được tính sau khi bạn chọn địa chỉ giao hàng ở bước thanh toán.</div>
 
                     <div className="cart-summary__total">
                       <div className="cart-summary__total-title">Tổng thanh toán</div>
                       <div className="cart-summary__total-content">
-                        <h2 className="cart-summary__total-price">{formatPrice(subtotal + shippingFee)}</h2>
+                        <h2 className="cart-summary__total-price">{formatPrice(subtotal)}</h2>
                         <div className="cart-summary__total-desc">
                           (ĐÃ BAO GỒM VAT)
                         </div>

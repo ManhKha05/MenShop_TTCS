@@ -32,11 +32,12 @@ public class ShopOrderController {
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) String code,
             @RequestParam(required = false) String status,
+            @RequestParam(required = false) String shippingStatus,
             @RequestParam(required = false) String paymentMethod,
             @RequestParam(required = false) LocalDateTime fromDate,
             @RequestParam(required = false) LocalDateTime toDate
     ) {
-        return ResponseEntity.ok(orderService.getShopOrders(page, size, code, status, paymentMethod, fromDate, toDate));
+        return ResponseEntity.ok(orderService.getShopOrders(page, size, code, status, shippingStatus, paymentMethod, fromDate, toDate));
     }
 
     @GetMapping("/shop/orders/{id}")

@@ -1,8 +1,105 @@
-.address-edit {
+.address-modal {
+  .ant-modal-content {
+    padding: 0;
+    border-radius: 22px;
+    overflow: hidden;
+  }
 
-  .title {
-    font-size: 20px;
-    font-weight: 700;
-    margin-bottom: 15px;
+  .ant-modal-close {
+    top: 18px;
+    right: 18px;
+  }
+
+  .ant-modal-container {
+    padding: 0 !important;
+    overflow: hidden;
+  }
+}
+
+.address-edit {
+  padding: 30px 32px 28px;
+  background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%);
+
+  &__header {
+    margin-bottom: 24px;
+
+    h2 {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 700;
+      color: #1f2937;
+    }
+
+    p {
+      margin: 6px 0 0;
+      font-size: 14px;
+      color: #6b7280;
+    }
+  }
+
+  &__row {
+    display: grid;
+    gap: 16px;
+
+    &--2 {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    &--3 {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .ant-form-item {
+    margin-bottom: 18px;
+  }
+
+  .ant-form-item-label {
+    padding-bottom: 6px;
+
+    label {
+      font-weight: 600;
+      color: #374151;
+    }
+  }
+
+  .ant-input,
+  .ant-select-selector {
+    height: 42px !important;
+    border-radius: 12px !important;
+  }
+
+  .ant-input {
+    padding: 0 14px;
+  }
+
+  .ant-select-selection-item,
+  .ant-select-selection-placeholder {
+    line-height: 40px !important;
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 10px;
+
+    .ant-btn {
+      height: 34px;
+      padding: 0 14px;
+      border-radius: 5px;
+      font-weight: 600;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .address-edit {
+    padding: 24px 20px;
+
+    &__row {
+      grid-template-columns: 1fr !important;
+      gap: 0;
+    }
   }
 }

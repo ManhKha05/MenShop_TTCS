@@ -9,7 +9,7 @@ import { IoFilterSharp } from "react-icons/io5";
 import { FaCalendarCheck } from "react-icons/fa6";
 import { Button, Form, Input, Select, DatePicker, Spin } from "antd";
 import OrderTable from "../../../components/OrderTable";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { get } from "../../../utils/request";
 import dayjs from "dayjs";
 import { connectSocket, subscribeSocket, unsubscribe } from "../../../utils/socket";
@@ -72,38 +72,33 @@ function Orders() {
   const [filters, setFilters] = useState({
     code: "",
     status: "",
+    shippingStatus: "",
     paymentMethod: "",
     fromDate: null,
     toDate: null,
   });
   const [loading, setLoading] = useState(false);
 
-  const fetchStats = async () => {
-    setLoading(true);
+  const fetchStats = useCallback(async () => {
     try {
       const res = await get("shop/orders/stats");
       const data = await res.json();
-
       if (!res.ok) throw new Error(data.message || "Lấy thống kê thất bại");
-
       setStats(data);
-
     } catch (error) {
       console.error(error);
-    } finally {
-      setLoading(false);
     }
-  }
+  }, []);
 
-  const fetchOrders = async () => {
+  const fetchOrders = useCallback(async () => {
     try {
       const res = await get(`shop/orders`, {
         page: page - 1,
         size: pageSize,
         ...filters
       });
-      const data = await res.json();
 
+      const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Lấy danh sách đơn hàng thất bại");
 
       setOrders(data.content || []);
@@ -111,18 +106,22 @@ function Orders() {
     } catch (error) {
       console.error(error);
     }
-  };
+  }, [page, pageSize, filters]);
 
   useEffect(() => {
     fetchStats();
     fetchOrders();
-  }, [page, pageSize, filters])
+  }, [fetchStats, fetchOrders]);
 
   useEffect(() => {
+    if (!shopId) return;
+
     let subscription;
 
     connectSocket(() => {
       subscription = subscribeSocket(`/topic/shop-orders/${shopId}`, (data) => {
+        console.log("Shop order event:", data);
+
         if (!data) return;
 
         if (
@@ -130,7 +129,7 @@ function Orders() {
           data.type === "ORDER_CANCELLED" ||
           data.type === "ORDER_UPDATED_STATUS"
         ) {
-          console.log("ok")
+          setPage(1); // order mới nên quay về trang đầu
           fetchStats();
           fetchOrders();
         }
@@ -140,7 +139,7 @@ function Orders() {
     return () => {
       subscription?.unsubscribe();
     };
-  }, []);
+  }, [shopId, fetchStats, fetchOrders]);
 
   console.log(orders);
 
@@ -150,6 +149,7 @@ function Orders() {
     setFilters({
       code: values.code || "",
       status: values.status || "",
+      shippingStatus: values.shippingStatus || "",
       paymentMethod: values.paymentMethod || "",
       fromDate: values.time?.[0]
         ? dayjs(values.time[0]).startOf("day").format("YYYY-MM-DDTHH:mm:ss")
@@ -200,23 +200,46 @@ function Orders() {
             </Form.Item>
 
             <Form.Item
-              label="Trạng thái"
+              label="Trạng thái đơn"
               name="status"
-              initialValue={""}
+              initialValue=""
             >
               <Select
                 style={{ width: 170 }}
                 options={[
-                  { value: '', label: 'Tất cả trạng thái' },
-                  { value: 'PENDING', label: 'Chờ xác nhận' },
-                  { value: 'CONFIRMED', label: 'Đã xác nhận' },
-                  { value: 'DELIVERING', label: 'Đang giao' },
-                  { value: 'DELIVERED', label: 'Đã giao' },
-                  { value: 'COMPLETED', label: 'Hoàn thành' },
-                  { value: 'CANCELLED', label: 'Đã hủy' },
+                  { value: "", label: "Tất cả trạng thái" },
+                  { value: "PENDING", label: "Chờ xác nhận" },
+                  { value: "CONFIRMED", label: "Đã xác nhận" },
+                  { value: "DELIVERED", label: "Đã giao" },
+                  { value: "CANCELLED", label: "Đã hủy" },
                 ]}
               />
             </Form.Item>
+
+            {/* <Form.Item
+              label="Vận chuyển"
+              name="shippingStatus"
+              initialValue=""
+            >
+              <Select
+                style={{ width: 190 }}
+                options={[
+                  { value: "", label: "Tất cả vận chuyển" },
+                  { value: "READY_TO_PICK", label: "Chờ lấy hàng" },
+                  { value: "PICKING", label: "Đang lấy hàng" },
+                  { value: "PICKED", label: "Đã lấy hàng" },
+                  { value: "STORING", label: "Đang lưu kho" },
+                  { value: "SORTING", label: "Đang phân loại" },
+                  { value: "TRANSPORTING", label: "Đang vận chuyển" },
+                  { value: "DELIVERING", label: "Đang giao" },
+                  { value: "DELIVERED", label: "Đã giao" },
+                  { value: "DELIVERY_FAIL", label: "Giao thất bại" },
+                  { value: "RETURN", label: "Đang hoàn hàng" },
+                  { value: "RETURNED", label: "Đã hoàn hàng" },
+                  { value: "CANCEL", label: "Đã hủy vận đơn" },
+                ]}
+              />
+            </Form.Item> */}
 
             <Form.Item
               label="Khoảng thời gian"

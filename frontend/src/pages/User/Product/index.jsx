@@ -222,6 +222,9 @@ function Product() {
     const buyNowItem = [
       {
         type: "buy_now",
+        shopId: product.shopId,
+        shopLogo: product.shopImg,
+        shopName: product.shopName,
         variantId: selectedVariant.id,
         productId: product.id,
         productName: product.name,

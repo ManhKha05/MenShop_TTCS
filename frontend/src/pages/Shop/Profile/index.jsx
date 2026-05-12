@@ -1,4 +1,4 @@
-import { Button, Form, Input, InputNumber, notification, Upload } from "antd";
+import { Button, Form, Input, InputNumber, notification, Upload, Select } from "antd";
 import "./Profile.scss";
 import { useEffect, useState } from "react";
 import { UploadOutlined } from '@ant-design/icons';
@@ -14,9 +14,15 @@ function Profile() {
   const [form] = useForm();
   const [notificationApi, contextHolder] = notification.useNotification();
 
+  const [provinces, setProvinces] = useState([]);
+  const [districts, setDistricts] = useState([]);
+  const [wards, setWards] = useState([]);
+
   useEffect(() => {
     const fetchApi = async () => {
       try {
+        await loadProvinces();
+
         const res = await get("shops/profile");
 
         if (!res.ok) {
@@ -25,17 +31,32 @@ function Profile() {
         }
 
         const shop = await res.json();
-        console.log(shop);
 
-        form.setFieldsValue(shop);
+        form.setFieldsValue({
+          ...shop,
+          provinceId: shop.provinceId,
+          districtId: shop.districtId,
+          wardId: shop.wardId,
+          detailAddress: shop.detailAddress,
+        });
+
         setLogo(shop.logo);
+
+        if (shop.provinceId) {
+          loadDistricts(shop.provinceId);
+        }
+
+        if (shop.districtId) {
+          loadWards(shop.districtId);
+        }
 
       } catch (error) {
         console.error(error);
       }
-    }
+    };
+
     fetchApi();
-  }, [])
+  }, []);
 
   const uploadToCloudinary = async (file) => {
     const formData = new FormData();
@@ -62,6 +83,44 @@ function Profile() {
     console.log("cancel");
   }
 
+  const loadProvinces = async () => {
+    const res = await get("addresses/provinces");
+    const data = await res.json();
+    setProvinces(data);
+  };
+
+  const loadDistricts = async (provinceId) => {
+    const res = await get(`addresses/districts?provinceId=${provinceId}`);
+    const data = await res.json();
+    setDistricts(data);
+  };
+
+  const loadWards = async (districtId) => {
+    const res = await get(`addresses/wards?districtId=${districtId}`);
+    const data = await res.json();
+    setWards(data);
+  };
+
+  const handleProvinceChange = (provinceId) => {
+    form.setFieldsValue({
+      districtId: null,
+      wardId: null,
+    });
+
+    setDistricts([]);
+    setWards([]);
+    loadDistricts(provinceId);
+  };
+
+  const handleDistrictChange = (districtId) => {
+    form.setFieldsValue({
+      wardId: null,
+    });
+
+    setWards([]);
+    loadWards(districtId);
+  };
+
   const onFinish = values => {
     const data = {
       ...values,
@@ -78,13 +137,17 @@ function Profile() {
         }
 
         notificationApi.success({
-          title: "Cập nhật thông tin cửa hàng thành công",
-        })
+          message: "Cập nhật thông tin cửa hàng thành công",
+        });
 
       } catch (error) {
-        console.log(error);
+        notificationApi.error({
+          message: "Lỗi",
+          description: error.message,
+        });
       }
-    }
+    };
+
     fetchApi();
   };
 
@@ -159,12 +222,77 @@ function Profile() {
               <div className="profile-shop__label">
                 Địa chỉ
               </div>
-              <Form.Item
-                name="address"
-                rules={[{ required: true, message: "Không được bỏ trống Số điện thoại!" }]}
-              >
-                <Input className="profile-shop__input" prefix={<IoLocation />} />
-              </Form.Item>
+              <div className="profile-shop__address-row">
+                <div className="profile-shop__detail">
+                  <div className="profile-shop__label">Tỉnh / Thành phố</div>
+                  <Form.Item
+                    name="provinceId"
+                    rules={[{ required: true, message: "Vui lòng chọn tỉnh/thành phố!" }]}
+                  >
+                    <Select
+                      placeholder="Chọn tỉnh/thành phố"
+                      onChange={handleProvinceChange}
+                      showSearch
+                      optionFilterProp="label"
+                      options={provinces.map(item => ({
+                        value: item.id,
+                        label: item.name,
+                      }))}
+                    />
+                  </Form.Item>
+                </div>
+
+                <div className="profile-shop__detail">
+                  <div className="profile-shop__label">Quận / Huyện</div>
+                  <Form.Item
+                    name="districtId"
+                    rules={[{ required: true, message: "Vui lòng chọn quận/huyện!" }]}
+                  >
+                    <Select
+                      placeholder="Chọn quận/huyện"
+                      onChange={handleDistrictChange}
+                      showSearch
+                      optionFilterProp="label"
+                      options={districts.map(item => ({
+                        value: item.id,
+                        label: item.name,
+                      }))}
+                    />
+                  </Form.Item>
+                </div>
+
+                <div className="profile-shop__detail">
+                  <div className="profile-shop__label">Phường / Xã</div>
+                  <Form.Item
+                    name="wardId"
+                    rules={[{ required: true, message: "Vui lòng chọn phường/xã!" }]}
+                  >
+                    <Select
+                      placeholder="Chọn phường/xã"
+                      showSearch
+                      optionFilterProp="label"
+                      options={wards.map(item => ({
+                        value: item.id,
+                        label: item.name,
+                      }))}
+                    />
+                  </Form.Item>
+                </div>
+              </div>
+
+              <div className="profile-shop__detail">
+                <div className="profile-shop__label">Địa chỉ cụ thể</div>
+                <Form.Item
+                  name="detailAddress"
+                  rules={[{ required: true, message: "Vui lòng nhập địa chỉ cụ thể!" }]}
+                >
+                  <Input
+                    className="profile-shop__input"
+                    prefix={<IoLocation />}
+                    placeholder="Ví dụ: Số 12, ngõ 5, đường ABC"
+                  />
+                </Form.Item>
+              </div>
             </div>
 
             <div className="profile-shop__detail">

@@ -15,6 +15,10 @@ public class ShopResponse {
     private String phone;
     private String email;
     private String address;
+    private String detailAddress;
+    private String wardId;
+    private Integer districtId;
+    private Integer provinceId;
     private LocalDateTime createdAt;
     private String status;
     private String ownerName;

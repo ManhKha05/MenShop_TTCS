@@ -249,9 +249,9 @@ function MyOrders() {
       case "CANCELLED":
         return (
           <>
-            <button className="myorders__product__btn myorders__product__btn--primary">
+            {/* <button className="myorders__product__btn myorders__product__btn--primary">
               Mua lại
-            </button>
+            </button> */}
             <Link
               to={`/don-hang/${order.id}`}
               className="myorders__product__btn"

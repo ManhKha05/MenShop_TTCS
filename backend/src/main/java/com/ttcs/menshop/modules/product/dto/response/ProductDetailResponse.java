@@ -23,6 +23,11 @@ public class ProductDetailResponse {
     private Integer viewCount;
     private BigDecimal ratingAvg;
 
+    private Integer weight;
+    private Integer width;
+    private Integer height;
+    private Integer length;
+
     private Integer categoryId;
     private String brandName;
 

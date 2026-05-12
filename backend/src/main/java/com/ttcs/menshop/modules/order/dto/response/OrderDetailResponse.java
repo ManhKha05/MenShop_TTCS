@@ -24,6 +24,11 @@ public class OrderDetailResponse {
     private String status;
     private LocalDateTime createdAt;
 
+    private String shippingServiceName;
+    private String shippingStatus;
+    private String ghnOrderCode;
+    private LocalDateTime expectedDeliveryTime;
+
     private String paymentMethod;
     private String paymentStatus;
     private LocalDateTime paidAt;

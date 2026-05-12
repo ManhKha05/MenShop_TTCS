@@ -46,7 +46,7 @@ function OrderTable({ orders = [], page = 1, pageSize = 10, total = 0, onChangeP
       key: "paymentMethod",
     },
     {
-      title: "Trạng thái",
+      title: "Trạng thái đơn",
       key: "status",
       render: ({ status }) => {
         switch (status) {
@@ -133,15 +133,21 @@ function OrderTable({ orders = [], page = 1, pageSize = 10, total = 0, onChangeP
             </Button>
           )} */}
 
-          {(record.status === "PENDING" || record.status === "CONFIRMED") && (
-            <Button
-              danger
-              icon={<CloseOutlined />}
-              onClick={() => handleAction(record, "cancel")}
-            >
-              Hủy
-            </Button>
-          )}
+          {(
+            record.status === "PENDING" ||
+            (
+              record.status === "CONFIRMED" &&
+              (!record.shippingStatus || record.shippingStatus === "READY_TO_PICK")
+            )
+          ) && (
+              <Button
+                danger
+                icon={<CloseOutlined />}
+                onClick={() => handleAction(record, "cancel")}
+              >
+                Hủy
+              </Button>
+            )}
         </Space>
       )
     },

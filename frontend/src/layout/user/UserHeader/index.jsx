@@ -48,12 +48,7 @@ function UserHeader() {
       console.log("Logout API lỗi", err);
     }
 
-    localStorage.removeItem("token");
-    localStorage.removeItem("fullname");
-    localStorage.removeItem("email");
-    localStorage.removeItem("avatar");
-    localStorage.removeItem("roles");
-    localStorage.removeItem("shopId");
+    localStorage.clear();
 
     sessionStorage.removeItem("token");
 

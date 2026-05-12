@@ -74,51 +74,209 @@
   }
 
   &-shipping {
+    &__shop-card {
+      margin-top: 18px;
+      padding: 16px;
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      background: #fff;
+    }
 
-
-    &__item {
-      width: 100%;
+    &__shop-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 15px 30px;
-      margin-bottom: 40px;
-      background-color: #fff;
-      border: 2px solid #ddd;
+      margin-bottom: 16px;
+    }
+
+    &__shop-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    &__shop-avatar {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+
+      img {
+        width: 100%;
+      }
+
+      &.orange {
+        color: #ef4444;
+        background: #fee2e2;
+      }
+
+      &.green {
+        color: #16a34a;
+        background: #dcfce7;
+      }
+    }
+
+    &__shop-name-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    &__shop-name {
+      font-size: 16px;
+      font-weight: 700;
+      color: #111827;
+    }
+
+    &__shop-badge {
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+
+      &.orange {
+        color: #ef4444;
+        background: #fee2e2;
+      }
+
+      &.green {
+        color: #16a34a;
+        background: #dcfce7;
+      }
+    }
+
+    &__shop-count {
+      margin-top: 4px;
+      color: #6b7280;
+      font-size: 15px;
+    }
+
+    &__shop-arrow {
+      font-size: 20px;
+      color: #64748b;
+    }
+
+    &__method-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    &__method {
+      width: 100%;
+      padding: 14px 16px;
+      border: 2px solid #e5e7eb;
       border-radius: 8px;
+      background: #fff;
+      display: grid;
+      grid-template-columns: 24px 56px 1fr auto;
+      align-items: center;
+      gap: 16px;
       cursor: pointer;
+      transition: 0.2s;
 
       &.active {
-        border: 2px solid blue;
-        background-color: rgba(233, 233, 247, 0.651);
+        border-color: #1154e4;
+        background: #f8fbff;
+      }
+    }
+
+    &__radio {
+      width: 20px;
+      height: 20px;
+      border: 2px solid #cbd5e1;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      &.active {
+        border-color: #2563eb;
+        background: #2563eb;
       }
 
-      &__content {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 10px;
+      span {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #fff;
       }
+    }
 
-      &__title {
-        font-size: 17px;
-        font-weight: 700;
-      }
+    &__method-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 12px;
+      background: #f1f5f9;
+      color: #64748b;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
 
-      &__desc {
-        font-size: 15px;
-        color: #000000a4;
+      &.active {
+        color: #2563eb;
+        background: #eaf1ff;
       }
+    }
 
-      &__price {
-        font-size: 18px;
-        font-weight: 700;
-      }
+    &__method-content {
+      text-align: left;
+    }
+
+    &__method-name {
+      font-size: 15px;
+      font-weight: 700;
+      color: #111827;
+    }
+
+    &__method-desc {
+      margin-top: 6px;
+      color: #6b7280;
+      font-size: 14px;
+    }
+
+    &__method-price-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    &__method-price {
+      font-size: 18px;
+      font-weight: 700;
+      color: #111827;
+      white-space: nowrap;
+    }
+
+    &__suggest {
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: #dbeafe;
+      color: #2563eb;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    &__total {
+      margin-top: 16px;
+      padding: 14px 16px;
+      border-radius: 10px;
+      background: #f8fafc;
+      display: flex;
+      justify-content: space-between;
+      font-weight: 700;
     }
   }
 
   &-payment {
 
+    &__list {
+      display: flex;
+    }
 
     &__item {
       width: 120px;
@@ -300,7 +458,7 @@
       align-items: center;
       justify-content: center;
       color: #fff;
-      background-color: rgba(0, 0, 255, 0.726);
+      background-color: #2563eb;
       font-weight: 700;
       border: none;
       border-radius: 10px;

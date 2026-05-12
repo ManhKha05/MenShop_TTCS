@@ -32,7 +32,4 @@ public class ShopConverter {
         return response;
     }
 
-    public ShopEntity toEntity(ShopRequest shopRequest) {
-        return modelMapper.map(shopRequest, ShopEntity.class);
-    }
 }

@@ -46,6 +46,7 @@ function LayoutHome() {
           style={{
             right: 24,
             bottom: 70,
+            zIndex: 100
             // insetInlineEnd: 164
           }}
         />

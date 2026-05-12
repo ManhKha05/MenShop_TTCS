@@ -282,7 +282,7 @@
   /* Thanh chứa nút bấm */
   .action-bar {
     display: flex;
-    justify-content: flex-end;
+    justify-content: flex-start;
     /* Đẩy các nút sang phải */
     align-items: center;
     gap: 16px;

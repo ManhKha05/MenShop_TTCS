@@ -78,7 +78,8 @@ public class CartItemServiceImpl implements CartItemService {
                     displayPrice,
                     imageUrl,
                     shop.getId(),
-                    shop.getName()
+                    shop.getName(),
+                    shop.getLogo()
             );
 
         }).toList();
@@ -90,7 +91,8 @@ public class CartItemServiceImpl implements CartItemService {
             Integer shopId = entry.getKey();
             List<CartItemResponse> items = entry.getValue();
             String shopName = items.get(0).getShopName();
-            return new CartShopResponse(shopId, shopName, items);
+            String shopLogo = items.get(0).getShopLogo();
+            return new CartShopResponse(shopId, shopName, shopLogo, items);
         }).toList();
 
     }

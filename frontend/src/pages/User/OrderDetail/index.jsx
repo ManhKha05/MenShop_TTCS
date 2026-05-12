@@ -61,42 +61,101 @@ function OrderDetail() {
     return () => {
       subscription?.unsubscribe();
     };
-  }, [id, order]);
+  }, [id]);
+
+  const orderStatusMap = {
+    PENDING: {
+      label: "CHỜ XÁC NHẬN",
+      icon: <MdShoppingCart />,
+    },
+    CONFIRMED: {
+      label: "ĐÃ XÁC NHẬN",
+      icon: <TbRosetteDiscountCheckFilled />,
+    },
+
+    READY_TO_PICK: {
+      label: "CHỜ LẤY HÀNG",
+      icon: <IoTimerOutline />,
+    },
+    PICKING: {
+      label: "ĐANG LẤY HÀNG",
+      icon: <MdLocalShipping />,
+    },
+    MONEY_COLLECT_PICKING: {
+      label: "ĐANG THU TIỀN KHI LẤY HÀNG",
+      icon: <FaHandHoldingHand />,
+    },
+    PICKED: {
+      label: "ĐÃ LẤY HÀNG",
+      icon: <FaCircleCheck />,
+    },
+    STORING: {
+      label: "ĐANG LƯU KHO",
+      icon: <GiCardboardBoxClosed />,
+    },
+    TRANSPORTING: {
+      label: "ĐANG VẬN CHUYỂN",
+      icon: <MdLocalShipping />,
+    },
+    SORTING: {
+      label: "ĐANG PHÂN LOẠI",
+      icon: <GiCardboardBoxClosed />,
+    },
+    DELIVERING: {
+      label: "ĐANG GIAO HÀNG",
+      icon: <MdLocalShipping />,
+    },
+    DELIVERED: {
+      label: "ĐÃ GIAO",
+      icon: <FaCircleCheck />,
+    },
+
+    DELIVERY_FAIL: {
+      label: "GIAO HÀNG THẤT BẠI",
+      icon: <MdCancel />,
+    },
+    WAITING_TO_RETURN: {
+      label: "CHỜ HOÀN HÀNG",
+      icon: <IoTimerOutline />,
+    },
+    RETURN: {
+      label: "ĐANG HOÀN HÀNG",
+      icon: <MdLocalShipping />,
+    },
+    RETURN_TRANSPORTING: {
+      label: "ĐANG VẬN CHUYỂN HOÀN",
+      icon: <MdLocalShipping />,
+    },
+    RETURN_SORTING: {
+      label: "ĐANG PHÂN LOẠI HOÀN",
+      icon: <GiCardboardBoxClosed />,
+    },
+    RETURNING: {
+      label: "ĐANG TRẢ HÀNG",
+      icon: <MdLocalShipping />,
+    },
+    RETURNED: {
+      label: "ĐÃ HOÀN HÀNG",
+      icon: <FaCircleCheck />,
+    },
+
+    CANCELLED: {
+      label: "ĐÃ HỦY",
+      icon: <MdCancel />,
+    },
+    CANCEL: {
+      label: "ĐÃ HỦY VẬN ĐƠN",
+      icon: <MdCancel />,
+    },
+  };
 
   const getOrderStatusText = (status) => {
-    switch (status) {
-      case "PENDING":
-        return "CHỜ XÁC NHẬN";
-      case "CONFIRMED":
-        return "ĐÃ XÁC NHẬN";
-      case "DELIVERING":
-        return "ĐANG GIAO HÀNG";
-      case "DELIVERED":
-        return "ĐÃ GIAO";
-      case "CANCELLED":
-        return "ĐÃ HỦY";
-      default:
-        return status;
-    }
+    return orderStatusMap[status]?.label || status || "KHÔNG XÁC ĐỊNH";
   };
 
   const getStatusHistoryIcon = (status) => {
-    switch (status) {
-      case "PENDING":
-        return <MdShoppingCart />;
-      case "CONFIRMED":
-        return <TbRosetteDiscountCheckFilled />;
-      case "DELIVERING":
-        return <MdLocalShipping />;
-      case "DELIVERED":
-        return <FaCircleCheck />;
-      case "CANCELLED":
-        return <MdCancel />;
-      default:
-        return status;
-    }
+    return orderStatusMap[status]?.icon || <IoTimerOutline />;
   };
-
 
   const handleCancelOrder = async () => {
     const res = await put(`orders/${id}/cancel`);
@@ -178,7 +237,7 @@ function OrderDetail() {
                       <span>Phương thức vận chuyển</span>
                     </div>
                     <div className="orderdetail__card__name">
-                      {order?.shippingFee === 15000 ? "Giao hàng tiết kiệm" : "Giao hàng nhanh"}
+                      {order?.shippingServiceName}
                     </div>
                     <div className="orderdetail__card__desc">
                       Phí vận chuyển: {formatPrice2(order?.shippingFee)}
@@ -326,11 +385,12 @@ function OrderDetail() {
                   Liên hệ người bán
                 </button> */}
 
-                {order?.status === "PENDING" && (
-                  <button className="cancel" onClick={showConfirmCancel}>
-                    Hủy đơn hàng
-                  </button>
-                )}
+                {["PENDING", "CONFIRMED", "READY_TO_PICK"].includes(order?.status) && (
+                    <button className="cancel" onClick={showConfirmCancel}>
+                      Hủy đơn hàng
+                    </button>
+                  )
+                }
 
               </div>
             </Col>

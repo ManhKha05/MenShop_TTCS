@@ -185,7 +185,7 @@ function ShopDashboard() {
               prefix={<DollarOutlined />}
             />
             <div className="shop-dashboard__stat-sub positive">
-              +{overview.revenueGrowthPercent || 0}% so với tháng trước
+              {overview.revenueGrowthPercent || 0}% so với tháng trước
             </div>
           </Card>
         </Col>

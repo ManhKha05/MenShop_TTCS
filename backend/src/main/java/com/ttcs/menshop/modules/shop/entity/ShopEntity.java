@@ -39,6 +39,18 @@ public class ShopEntity {
     @Column(name = "address")
     private String address;
 
+    @Column(name = "detail_address")
+    private String detailAddress;
+
+    @Column(name = "ward_id")
+    private String wardId;
+
+    @Column(name = "district_id")
+    private Integer districtId;
+
+    @Column(name = "province_id")
+    private Integer provinceId;
+
     @Column(name = "createdAt", insertable = false, updatable = false)
     private LocalDateTime createdAt;
 

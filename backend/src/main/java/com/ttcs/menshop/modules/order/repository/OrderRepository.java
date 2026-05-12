@@ -56,6 +56,7 @@ public interface OrderRepository extends JpaRepository<OrderEntity, Integer> {
             o.receiverPhone,
             o.createdAt,
             o.status,
+            o.shippingStatus,
             o.paymentMethod,
             o.status,
             o.finalTotal
@@ -64,6 +65,7 @@ public interface OrderRepository extends JpaRepository<OrderEntity, Integer> {
         where o.shop.id = :shopId
           and (:code is null or lower(o.code) like lower(concat('%', :code, '%')))
           and (:status is null or :status = 'ALL' or o.status = :status)
+          and (:shippingStatus is null or :shippingStatus = 'ALL' or o.shippingStatus = :shippingStatus)
           and (:paymentMethod is null or :paymentMethod = 'ALL' or o.paymentMethod = :paymentMethod)
           and (:fromDate is null or o.createdAt >= :fromDate)
           and (:toDate is null or o.createdAt <= :toDate)
@@ -73,6 +75,7 @@ public interface OrderRepository extends JpaRepository<OrderEntity, Integer> {
             @Param("shopId") Integer shopId,
             @Param("code") String code,
             @Param("status") String status,
+            @Param("shippingStatus") String shippingStatus,
             @Param("paymentMethod") String paymentMethod,
             @Param("fromDate") LocalDateTime fromDate,
             @Param("toDate") LocalDateTime toDate,
@@ -80,4 +83,6 @@ public interface OrderRepository extends JpaRepository<OrderEntity, Integer> {
     );
 
     List<OrderEntity> findTop5ByOrderByCreatedAtDesc();
+
+    Optional<OrderEntity> findByGhnOrderCode(String code);
 }

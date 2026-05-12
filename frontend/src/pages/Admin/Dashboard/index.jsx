@@ -204,7 +204,7 @@ function DashboardAdmin() {
               prefix={<DollarOutlined />}
             />
             <div className="dashboard-admin__growth positive">
-              +{dashboard.overview.revenueGrowthPercent || 0}% so với tháng trước
+              {dashboard.overview.revenueGrowthPercent || 0}% so với tháng trước
             </div>
           </Card>
         </Col>

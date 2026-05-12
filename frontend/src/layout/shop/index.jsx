@@ -181,7 +181,7 @@ function LayoutShop() {
       key: `${item.id || item.orderId || index}`,
       label: (
         <div
-          style={{ minWidth: 280 }}
+          style={{ maxWidth: 480 }}
           // onClick={() => {
           //   // if (item.orderId) {
           //   //   navigate(`/shop/orders/${item.orderId}`);

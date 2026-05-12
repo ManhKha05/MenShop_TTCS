@@ -22,12 +22,10 @@ public class CartItemResponse {
 
     private Integer productId;
     private String productName;
-//    private double price;
-//    private double salePrice;
-//    private double flashPrice;
     private BigDecimal displayPrice;
     private String imageUrl;
 
     private Integer shopId;
     private String shopName;
+    private String shopLogo;
 }

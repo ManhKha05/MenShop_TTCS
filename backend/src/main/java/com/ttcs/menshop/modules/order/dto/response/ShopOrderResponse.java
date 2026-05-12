@@ -17,6 +17,7 @@ public class ShopOrderResponse {
     private String receiverPhone;
     private LocalDateTime createdAt;
     private String status;
+    private String shippingStatus;
     private String paymentMethod;
     private String paymentStatus;
     private BigDecimal finalPrice;

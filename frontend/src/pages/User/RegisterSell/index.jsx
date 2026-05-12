@@ -1,18 +1,64 @@
-import { Button, Form, Input, InputNumber, notification, Upload } from "antd";
+import { Button, Form, Input, notification, Upload, Select, InputNumber } from "antd";
 import "./RegisterSell.scss";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { UploadOutlined } from '@ant-design/icons';
 import { FaPhone } from "react-icons/fa6";
 import { MdEmail } from "react-icons/md";
 import { IoLocation } from "react-icons/io5";
 import { useForm } from "antd/es/form/Form";
-import { post } from "../../../utils/request";
+import { get, post } from "../../../utils/request";
 
 
 function RegisterShop() {
   const [logo, setLogo] = useState("https://img.favpng.com/8/20/24/computer-icons-online-shopping-png-favpng-QuiWDXbsc69EE92m3bZ2i0ybS.jpg");
   const [form] = useForm();
   const [notificationApi, contextHolder] = notification.useNotification();
+
+  const [provinces, setProvinces] = useState([]);
+  const [districts, setDistricts] = useState([]);
+  const [wards, setWards] = useState([]);
+
+  useEffect(() => {
+    loadProvinces();
+  }, []);
+
+  const loadProvinces = async () => {
+    const res = await get("addresses/provinces");
+    const data = await res.json();
+    setProvinces(data);
+  };
+
+  const loadDistricts = async (provinceId) => {
+    const res = await get(`addresses/districts?provinceId=${provinceId}`);
+    const data = await res.json();
+    setDistricts(data);
+  };
+
+  const loadWards = async (districtId) => {
+    const res = await get(`addresses/wards?districtId=${districtId}`);
+    const data = await res.json();
+    setWards(data);
+  };
+
+  const handleProvinceChange = (provinceId) => {
+    form.setFieldsValue({
+      districtId: null,
+      wardId: null,
+    });
+
+    setDistricts([]);
+    setWards([]);
+    loadDistricts(provinceId);
+  };
+
+  const handleDistrictChange = (districtId) => {
+    form.setFieldsValue({
+      wardId: null,
+    });
+
+    setWards([]);
+    loadWards(districtId);
+  };
 
   const uploadToCloudinary = async (file) => {
     const formData = new FormData();
@@ -56,14 +102,18 @@ function RegisterShop() {
 
         notificationApi.success({
           title: "Gửi yêu cầu thành công",
-          description: "Yêu cầu đăng ký mở Cửa hàng đã được gửi tới quản trị viên và sẽ gửi cho bạn kết quả sớm nhất!",
-          placement: 'bottomRight'
-        })
+          description: "Yêu cầu đăng ký mở Cửa hàng đã được gửi tới quản trị viên!",
+          placement: "bottomRight",
+        });
 
       } catch (error) {
-        console.log(error);
+        notificationApi.error({
+          title: "Lỗi",
+          description: error.message,
+        });
       }
-    }
+    };
+
     fetchApi();
   };
 
@@ -138,12 +188,77 @@ function RegisterShop() {
               <div className="register-shop__label">
                 Địa chỉ
               </div>
-              <Form.Item
-                name="address"
-                rules={[{ required: true, message: "Không được bỏ trống địa chỉ cửa hàng!" }]}
-              >
-                <Input className="register-shop__input" prefix={<IoLocation />} />
-              </Form.Item>
+              <div className="register-shop__address-row">
+                <div className="register-shop__detail">
+                  <div className="register-shop__label">Tỉnh / Thành phố</div>
+                  <Form.Item
+                    name="provinceId"
+                    rules={[{ required: true, message: "Vui lòng chọn tỉnh/thành phố!" }]}
+                  >
+                    <Select
+                      placeholder="Chọn tỉnh/thành phố"
+                      onChange={handleProvinceChange}
+                      showSearch
+                      optionFilterProp="label"
+                      options={provinces.map(item => ({
+                        value: item.id,
+                        label: item.name,
+                      }))}
+                    />
+                  </Form.Item>
+                </div>
+
+                <div className="register-shop__detail">
+                  <div className="register-shop__label">Quận / Huyện</div>
+                  <Form.Item
+                    name="districtId"
+                    rules={[{ required: true, message: "Vui lòng chọn quận/huyện!" }]}
+                  >
+                    <Select
+                      placeholder="Chọn quận/huyện"
+                      onChange={handleDistrictChange}
+                      showSearch
+                      optionFilterProp="label"
+                      options={districts.map(item => ({
+                        value: item.id,
+                        label: item.name,
+                      }))}
+                    />
+                  </Form.Item>
+                </div>
+
+                <div className="register-shop__detail">
+                  <div className="register-shop__label">Phường / Xã</div>
+                  <Form.Item
+                    name="wardId"
+                    rules={[{ required: true, message: "Vui lòng chọn phường/xã!" }]}
+                  >
+                    <Select
+                      placeholder="Chọn phường/xã"
+                      showSearch
+                      optionFilterProp="label"
+                      options={wards.map(item => ({
+                        value: item.id,
+                        label: item.name,
+                      }))}
+                    />
+                  </Form.Item>
+                </div>
+              </div>
+
+              <div className="register-shop__detail">
+                <div className="register-shop__label">Địa chỉ cụ thể</div>
+                <Form.Item
+                  name="detailAddress"
+                  rules={[{ required: true, message: "Vui lòng nhập địa chỉ cụ thể!" }]}
+                >
+                  <Input
+                    className="register-shop__input"
+                    prefix={<IoLocation />}
+                    placeholder="Ví dụ: Số 12, ngõ 5, đường ABC"
+                  />
+                </Form.Item>
+              </div>
             </div>
 
             <div className="register-shop__detail">

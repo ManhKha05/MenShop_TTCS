@@ -19,6 +19,7 @@ public interface OrderService {
             int size,
             String code,
             String status,
+            String shippingStatus,
             String paymentMethod,
             LocalDateTime fromDate,
             LocalDateTime toDate

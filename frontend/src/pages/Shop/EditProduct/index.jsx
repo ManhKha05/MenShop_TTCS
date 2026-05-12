@@ -8,6 +8,7 @@ import TextArea from "antd/es/input/TextArea";
 import { BsLayers } from 'react-icons/bs';
 import { FiPlusCircle, FiTrash2 } from 'react-icons/fi';
 import { BsTags } from 'react-icons/bs';
+import { MdLocalShipping } from "react-icons/md";
 import { get, post, put } from "../../../utils/request";
 import { useParams, useNavigate } from "react-router-dom";
 
@@ -46,6 +47,10 @@ function EditProduct() {
             price: productData.price,
             sale_price: productData.salePrice,
             description: productData.description,
+            weight: productData.weight,
+            length: productData.length,
+            width: productData.width,
+            height: productData.height,
             category: productData.categoryId,
             status: productData.status
           });
@@ -175,7 +180,6 @@ function EditProduct() {
   };
 
   const handleSubmit = async () => {
-    // console.log(status);
     console.log(await form.validateFields());
     console.log("images", imageList)
     console.log("variants", variants);
@@ -184,7 +188,6 @@ function EditProduct() {
     const values = await form.validateFields();
 
     try {
-      // 🔥 VALIDATE VARIANTS
       if (variants.length === 0) {
         api.error({
           message: "Lỗi",
@@ -203,7 +206,6 @@ function EditProduct() {
         }
       }
 
-      // 🔥 VALIDATE ATTRIBUTES
       for (let attr of attributes) {
         if (!attr.name || !attr.value) {
           api.error({
@@ -227,6 +229,10 @@ function EditProduct() {
         price: values.price,
         salePrice: values.sale_price,
         description: values.description,
+        weight: values.weight,
+        length: values.length,
+        width: values.width,
+        height: values.height,
         categoryId: values.category,
         images: imageList,
         variants: variants.map(v => ({
@@ -238,8 +244,6 @@ function EditProduct() {
         attributesJson: attributesJson,
         status: values.status
       };
-
-      console.log(payload);
 
       const res = isEdit
         ? await put(`shop/products/${id}`, payload)
@@ -403,6 +407,83 @@ function EditProduct() {
                 />
               </Form.Item>
 
+            </div>
+          </div>
+
+          <div className="box">
+            <div className="box__header">
+              <MdLocalShipping className="box__header__icon" />
+              <div className="box__header__title">
+                Thông số vận chuyển
+              </div>
+            </div>
+
+            <div className="box__content">
+              <Row gutter={16}>
+                <Col span={6}>
+                  <Form.Item
+                    name="weight"
+                    label="CÂN NẶNG (gram)"
+                    rules={[
+                      { required: true, message: "Vui lòng nhập cân nặng!" }
+                    ]}
+                  >
+                    <InputNumber
+                      min={1}
+                      style={{ width: "100%" }}
+                      placeholder="VD: 300"
+                    />
+                  </Form.Item>
+                </Col>
+
+                <Col span={6}>
+                  <Form.Item
+                    name="length"
+                    label="CHIỀU DÀI (cm)"
+                    rules={[
+                      { required: true, message: "Vui lòng nhập chiều dài!" }
+                    ]}
+                  >
+                    <InputNumber
+                      min={1}
+                      style={{ width: "100%" }}
+                      placeholder="VD: 20"
+                    />
+                  </Form.Item>
+                </Col>
+
+                <Col span={6}>
+                  <Form.Item
+                    name="width"
+                    label="CHIỀU RỘNG (cm)"
+                    rules={[
+                      { required: true, message: "Vui lòng nhập chiều rộng!" }
+                    ]}
+                  >
+                    <InputNumber
+                      min={1}
+                      style={{ width: "100%" }}
+                      placeholder="VD: 20"
+                    />
+                  </Form.Item>
+                </Col>
+
+                <Col span={6}>
+                  <Form.Item
+                    name="height"
+                    label="CHIỀU CAO (cm)"
+                    rules={[
+                      { required: true, message: "Vui lòng nhập chiều cao!" }
+                    ]}
+                  >
+                    <InputNumber
+                      min={1}
+                      style={{ width: "100%" }}
+                      placeholder="VD: 10"
+                    />
+                  </Form.Item>
+                </Col>
+              </Row>
             </div>
           </div>
 

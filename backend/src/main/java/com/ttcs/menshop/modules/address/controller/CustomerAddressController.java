@@ -3,7 +3,12 @@ package com.ttcs.menshop.modules.address.controller;
 import com.ttcs.menshop.auth.service.AuthService;
 import com.ttcs.menshop.modules.address.dto.request.AddressRequest;
 import com.ttcs.menshop.modules.address.dto.response.AddressResponse;
+import com.ttcs.menshop.modules.address.dto.response.GhnDistrictResponse;
+import com.ttcs.menshop.modules.address.dto.response.GhnProvinceResponse;
+import com.ttcs.menshop.modules.address.dto.response.GhnWardResponse;
 import com.ttcs.menshop.modules.address.service.AddressService;
+import com.ttcs.menshop.modules.address.service.GhnAddressService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,14 +17,26 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/addresses")
+@RequiredArgsConstructor
 public class CustomerAddressController {
 
     private final AddressService addressService;
     private final AuthService authService;
+    private final GhnAddressService ghnAddressService;
 
-    public CustomerAddressController(AddressService addressService, AuthService authService) {
-        this.addressService = addressService;
-        this.authService = authService;
+    @GetMapping("/provinces")
+    public List<GhnProvinceResponse> getProvinces() {
+        return ghnAddressService.getProvinces();
+    }
+
+    @GetMapping("/districts")
+    public List<GhnDistrictResponse> getDistricts(@RequestParam Integer provinceId) {
+        return ghnAddressService.getDistricts(provinceId);
+    }
+
+    @GetMapping("/wards")
+    public List<GhnWardResponse> getWards(@RequestParam Integer districtId) {
+        return ghnAddressService.getWards(districtId);
     }
 
     @GetMapping()

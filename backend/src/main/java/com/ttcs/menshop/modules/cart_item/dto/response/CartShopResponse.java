@@ -14,5 +14,6 @@ import java.util.List;
 public class CartShopResponse {
     private Integer shopId;
     private String shopName;
+    private String shopLogo;
     private List<CartItemResponse> cartItems;
 }

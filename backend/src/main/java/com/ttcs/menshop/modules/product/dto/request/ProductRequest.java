@@ -13,6 +13,10 @@ public class ProductRequest {
     private BigDecimal price;
     private BigDecimal salePrice;
     private String description;
+    private Integer weight;
+    private Integer width;
+    private Integer height;
+    private Integer length;
     private Integer categoryId;
     private String status;
     private String brandName;

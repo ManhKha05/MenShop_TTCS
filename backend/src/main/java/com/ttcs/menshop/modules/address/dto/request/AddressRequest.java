@@ -8,5 +8,11 @@ import lombok.Setter;
 public class AddressRequest {
     private String receiverName;
     private String phone;
-    private String address;
+    private String detailAddress;
+
+    private Integer provinceId;
+    private Integer districtId;
+    private String wardId;
+
+//    private Boolean isDefault;
 }

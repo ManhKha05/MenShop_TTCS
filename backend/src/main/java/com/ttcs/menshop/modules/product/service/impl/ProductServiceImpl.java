@@ -140,6 +140,10 @@ public class ProductServiceImpl implements ProductService {
         res.setPrice(p.getPrice());
         res.setSalePrice(p.getSalePrice());
         res.setDescription(p.getDescription());
+        res.setHeight(p.getHeight());
+        res.setWeight(p.getWeight());
+        res.setLength(p.getLength());
+        res.setWidth(p.getWidth());
         res.setStatus(p.getStatus());
         res.setShopId(p.getShop().getId());
         res.setShopName(p.getShop().getName());
@@ -240,6 +244,10 @@ public class ProductServiceImpl implements ProductService {
         product.setPrice(req.getPrice());
         product.setSalePrice(req.getSalePrice());
         product.setDescription(req.getDescription());
+        product.setWeight(req.getWeight());
+        product.setHeight(req.getHeight());
+        product.setWidth(req.getWidth());
+        product.setLength(req.getLength());
         product.setAttributesJson(req.getAttributesJson());
         product.setUpdatedAt(LocalDateTime.now());
 

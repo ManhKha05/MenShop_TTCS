@@ -11,6 +11,7 @@ function ModalRegister({ open, flashSaleId, onCancel }) {
   const [total, setTotal] = useState(12);
   const [keyword, setKeyword] = useState("");
   const [products, setProducts] = useState([]);
+  const [selectedMap, setSelectedMap] = useState({});
 
   useEffect(() => {
     if (open) fetchProducts();
@@ -34,9 +35,9 @@ function ModalRegister({ open, flashSaleId, onCancel }) {
         image: p.image,
         price: p.price,
         stock: p.stock,
-        selected: p.isRegistered,
-        flashPrice: p.flashPrice,
 
+        selected: selectedMap[p.id]?.selected ?? p.isRegistered,
+        flashPrice: selectedMap[p.id]?.flashPrice ?? p.flashPrice,
       }))
     );
 
@@ -56,16 +57,32 @@ function ModalRegister({ open, flashSaleId, onCancel }) {
           : item
       )
     );
+
+    setSelectedMap(prev => ({
+      ...prev,
+      [id]: {
+        ...prev[id],
+        selected: checked
+      }
+    }));
   };
 
   const handleChange = (id, field, value) => {
-    setProducts((prev) =>
-      prev.map((item) =>
+    setProducts(prev =>
+      prev.map(item =>
         item.id === id
           ? { ...item, [field]: value }
           : item
       )
     );
+
+    setSelectedMap(prev => ({
+      ...prev,
+      [id]: {
+        ...prev[id],
+        [field]: value
+      }
+    }));
   };
 
   const handleSearch = (e) => {
@@ -113,10 +130,10 @@ function ModalRegister({ open, flashSaleId, onCancel }) {
 
     const payload = {
       flashSaleId,
-      items: products.map(item => ({
-        productId: item.id,
-        flashPrice: item.selected ? item.flashPrice : null,
-        selected: item.selected
+      items: Object.entries(selectedMap).map(([id, value]) => ({
+        productId: Number(id),
+        flashPrice: value.selected ? value.flashPrice : null,
+        selected: value.selected
       }))
     };
 

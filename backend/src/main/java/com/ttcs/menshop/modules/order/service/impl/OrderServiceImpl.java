@@ -9,6 +9,8 @@ import com.ttcs.menshop.exception.NotFoundException;
 import com.ttcs.menshop.modules.address.entity.AddressEntity;
 import com.ttcs.menshop.modules.address.repository.AddressRepository;
 import com.ttcs.menshop.modules.cart_item.repository.CartItemRepository;
+import com.ttcs.menshop.modules.ghn.dto.response.GhnCreateOrderResponse;
+import com.ttcs.menshop.modules.ghn.service.GhnService;
 import com.ttcs.menshop.modules.notification.service.NotificationService;
 import com.ttcs.menshop.modules.order.dto.PreparedOrderItem;
 import com.ttcs.menshop.modules.order.dto.request.OrderCreateRequest;
@@ -34,6 +36,7 @@ import com.ttcs.menshop.modules.product_image.entity.ProductImageEntity;
 import com.ttcs.menshop.modules.product_variant.entity.ProductVariantEntity;
 import com.ttcs.menshop.modules.product_variant.repository.ProductVariantRepository;
 import com.ttcs.menshop.modules.sale_product.repository.SaleProductRepository;
+import com.ttcs.menshop.modules.shipping.dto.request.ShopShippingRequest;
 import com.ttcs.menshop.modules.shop.entity.ShopEntity;
 import com.ttcs.menshop.modules.shop.repository.ShopRepository;
 import com.ttcs.menshop.notification.shop.service.ShopNotificationService;
@@ -42,6 +45,7 @@ import com.ttcs.menshop.websocket.dto.OrderStatusEvent;
 import com.ttcs.menshop.websocket.dto.ShopOrderEvent;
 import com.ttcs.menshop.websocket.service.WebSocketService;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -50,12 +54,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
 
     private final UserRepository userRepository;
@@ -76,27 +83,8 @@ public class OrderServiceImpl implements OrderService {
     private final NotificationService notificationService;
     private final EmailService emailService;
     private final UserInteractionRepository userInteractionRepository;
+    private final GhnService ghnService;
 
-    public OrderServiceImpl(UserRepository userRepository, AddressRepository addressRepository, CartItemRepository cartItemRepository, OrderRepository orderRepository, OrderItemRepository orderItemRepository, ProductVariantRepository productVariantRepository, OrderStatusRepository orderStatusRepository, PaymentGroupRepository paymentGroupRepository, VnPayService vnPayService, SaleProductRepository saleProductRepository, ShopRepository shopRepository, ShopRepository shopRepository1, AuthService authService, WebSocketService webSocketService, ProductRepository productRepository, ShopNotificationService shopNotificationService, NotificationService notificationService, EmailService emailService, UserInteractionRepository userInteractionRepository) {
-        this.userRepository = userRepository;
-        this.addressRepository = addressRepository;
-        this.cartItemRepository = cartItemRepository;
-        this.orderRepository = orderRepository;
-        this.orderItemRepository = orderItemRepository;
-        this.productVariantRepository = productVariantRepository;
-        this.orderStatusRepository = orderStatusRepository;
-        this.paymentGroupRepository = paymentGroupRepository;
-        this.vnPayService = vnPayService;
-        this.saleProductRepository = saleProductRepository;
-        this.shopRepository = shopRepository1;
-        this.authService = authService;
-        this.webSocketService = webSocketService;
-        this.productRepository = productRepository;
-        this.shopNotificationService = shopNotificationService;
-        this.notificationService = notificationService;
-        this.emailService = emailService;
-        this.userInteractionRepository = userInteractionRepository;
-    }
 
     @Transactional
     @Override
@@ -156,6 +144,15 @@ public class OrderServiceImpl implements OrderService {
             itemsByShop.computeIfAbsent(shopId, k -> new ArrayList<>()).add(prepared);
         }
 
+        Map<Integer, ShopShippingRequest> shippingByShop =
+                request.getShippingFees()
+                        .stream()
+                        .collect(Collectors.toMap(
+                                ShopShippingRequest::getShopId,
+                                item -> item
+                        ));
+
+
         BigDecimal grandTotal = BigDecimal.ZERO;
 
         for (List<PreparedOrderItem> shopItems : itemsByShop.values()) {
@@ -164,7 +161,13 @@ public class OrderServiceImpl implements OrderService {
                 totalPrice = totalPrice.add(item.getSubtotal());
             }
 
-            BigDecimal shippingFee = getShippingFee(request.getShippingMethod());
+            ShopShippingRequest shipping = shippingByShop.get(shopItems.get(0)
+                    .getVariant()
+                    .getProduct()
+                    .getShop()
+                    .getId());
+
+            BigDecimal shippingFee = shipping.getFee();
             BigDecimal finalTotal = totalPrice.add(shippingFee);
             grandTotal = grandTotal.add(finalTotal);
         }
@@ -191,8 +194,9 @@ public class OrderServiceImpl implements OrderService {
                 totalPrice = totalPrice.add(item.getSubtotal());
             }
 
-            BigDecimal shippingFee = getShippingFee(request.getShippingMethod());
-            BigDecimal finalTotal = totalPrice.add(shippingFee);
+            ShopShippingRequest shipping = shippingByShop.get(shopId);
+
+            BigDecimal finalTotal = totalPrice.add(shipping.getFee());
 
             OrderEntity order = new OrderEntity();
             order.setCode(generateCode("DH"));
@@ -201,15 +205,21 @@ public class OrderServiceImpl implements OrderService {
             order.setReceiverName(address.getReceiverName());
             order.setReceiverPhone(address.getPhone());
             order.setAddress(address.getAddress());
+            order.setReceiverDistrictId(address.getDistrictId());
+            order.setReceiverWardCode(address.getWardId());
             order.setPaymentMethod(request.getPaymentMethod().toUpperCase());
             order.setPaymentStatus("UNPAID");
             order.setNote(request.getNote());
             order.setPaymentGroup(paymentGroup);
             order.setStatus("PENDING");
+            order.setShippingStatus(null);
             order.setUpdatedAt(LocalDateTime.now());
             order.setTotalPrice(totalPrice);
-            order.setShippingFee(shippingFee);
             order.setFinalTotal(finalTotal);
+
+            order.setShippingServiceId(shipping.getShippingServiceId());
+            order.setShippingServiceName(shipping.getShippingServiceName());
+            order.setShippingFee(shipping.getFee());
 
             orderRepository.save(order);
 
@@ -247,11 +257,11 @@ public class OrderServiceImpl implements OrderService {
             orderItemRepository.saveAll(orderItems);
             userInteractionRepository.saveAll(interactions);
 
-            OrderStatusEntity orderStatus = new OrderStatusEntity();
-            orderStatus.setOrder(order);
-            orderStatus.setStatus("PENDING");
-            orderStatus.setNote("Đơn hàng đã được tạo");
-            orderStatusRepository.save(orderStatus);
+            saveHistory(
+                    order,
+                    "PENDING",
+                    "Đơn hàng đã được tạo"
+            );
 
             createdOrders.add(order);
             webSocketService.sendToTopic(
@@ -261,14 +271,6 @@ public class OrderServiceImpl implements OrderService {
                             shopId
                             )
             );
-
-//            notificationService.createAndSend(
-//                    order.getUser(),
-//                    order,
-//                    "ORDER_CREATED",
-//                    "Đặt hàng thành công",
-//                    "Đơn hàng " + order.getCode() + " đã được tạo"
-//            );
 
             notificationService.createAndSend(
                     order.getShop().getUser(),
@@ -342,6 +344,10 @@ public class OrderServiceImpl implements OrderService {
         res.setPaymentMethod(order.getPaymentMethod());
         res.setPaymentStatus(order.getPaymentStatus());
         res.setPaidAt(order.getPaymentGroup().getPaidAt());
+        res.setShippingServiceName(order.getShippingServiceName());
+        res.setShippingStatus(order.getShippingStatus());
+        res.setGhnOrderCode(order.getGhnOrderCode());
+        res.setExpectedDeliveryTime(order.getExpectedDeliveryTime());
 
         List<OrderItemEntity> orderItems = orderItemRepository.findByOrderId(id);
         List<OrderItemDetailResponse> orderItemDetails = orderItems.stream()
@@ -369,22 +375,8 @@ public class OrderServiceImpl implements OrderService {
                     OrderStatusHistoryResponse status = new OrderStatusHistoryResponse();
                     status.setStatus(s.getStatus());
 
-                    if(s.getStatus().equals("PENDING")) {
-                        status.setTitle("Đã đặt đơn");
-                        status.setDescription("Đơn hàng đã được tạo thành công");
-                    } else if(s.getStatus().equals("CONFIRMED")) {
-                        status.setTitle("Đã xác nhận");
-                        status.setDescription("Người bán đã xác nhận đơn hàng");
-                    } else if(s.getStatus().equals("DELIVERING")) {
-                        status.setTitle("Đang giao hàng");
-                        status.setDescription("Đơn hàng đang được vận chuyển đến bạn");
-                    } else if(s.getStatus().equals("DELIVERED")) {
-                        status.setTitle("Đã giao thành công");
-                        status.setDescription("Đơn hàng đã được giao thành công");
-                    } else if(s.getStatus().equals("CANCELLED")) {
-                        status.setTitle("Đã hủy");
-                        status.setDescription("Đơn hàng đã được hủy");
-                    }
+                    status.setTitle(mapStatusTitle(s.getStatus()));
+                    status.setDescription(s.getNote());
 
                     status.setCreatedAt(s.getCreatedAt());
                     return status;
@@ -399,36 +391,36 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     @Override
     public void cancelOrder(Integer id) {
+
         OrderEntity order = orderRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy đơn hàng id:" + id));
+                .orElseThrow(() ->
+                        new NotFoundException("Không tìm thấy đơn hàng id:" + id));
+
+        if(order.getStatus().equals("COMPLETED")) {
+            throw new BadRequestException("Không thể hủy đơn đã hoàn tất");
+        }
+
+        if(order.getStatus().equals("CANCELLED")) {
+            throw new BadRequestException("Đơn hàng đã bị hủy");
+        }
 
         order.setStatus("CANCELLED");
+
         order.setUpdatedAt(LocalDateTime.now());
 
         if(order.getPaymentStatus().equals("PAID")) {
             order.setPaymentStatus("REFUNDED");
         }
 
-        OrderStatusEntity history = new OrderStatusEntity();
-        history.setOrder(order);
-        history.setStatus("CANCELLED");
-        history.setNote("Đơn hàng đã được hủy");
-        history.setCreatedAt(LocalDateTime.now());
+        restoreStock(order);
 
-        List<OrderItemEntity> orderItems = orderItemRepository.findByOrderId(order.getId());
-
-        for (OrderItemEntity item : orderItems) {
-            ProductVariantEntity variant = item.getVariant();
-            variant.setStock(variant.getStock() + item.getQuantity());
-            productVariantRepository.save(variant);
-
-            ProductEntity product = variant.getProduct();
-            product.setSoldCount(product.getSoldCount() - item.getQuantity());
-            productRepository.save(product);
-        }
-
-        orderStatusRepository.save(history);
         orderRepository.save(order);
+
+        saveHistory(
+                order,
+                "CANCELLED",
+                "Đơn hàng đã được hủy"
+        );
 
         webSocketService.sendToTopic(
                 "/topic/shop-orders/" + order.getShop().getId(),
@@ -436,7 +428,16 @@ public class OrderServiceImpl implements OrderService {
                         "ORDER_CANCELLED",
                         order.getShop().getId()
                 )
-        );    }
+        );
+
+        webSocketService.sendToTopic(
+                "/topic/orders/" + order.getId(),
+                new OrderStatusEvent(
+                        "ORDER_UPDATED_STATUS",
+                        order.getId()
+                )
+        );
+    }
 
     @Override
     public List<OrderHistoryResponse> getMyOrders(String status, String keyword) {
@@ -481,59 +482,139 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Page<ShopOrderResponse> getShopOrders(int page, int size, String code, String status, String paymentMethod, LocalDateTime fromDate, LocalDateTime toDate) {
+    public Page<ShopOrderResponse> getShopOrders(int page, int size, String code, String status, String shippingStatus, String paymentMethod, LocalDateTime fromDate, LocalDateTime toDate) {
         UserEntity user = authService.getCurrentUser();
 
         Pageable pageable = PageRequest.of(page, size);
-        return orderRepository.findShopOrders(user.getShop().getId(), code, status, paymentMethod, fromDate, toDate, pageable);
+        return orderRepository.findShopOrders(user.getShop().getId(), code, status, shippingStatus, paymentMethod, fromDate, toDate, pageable);
     }
 
     @Transactional
     @Override
     public void updateOrderStatus(Integer orderId, String status) {
         OrderEntity order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy đơn hàng id:" + orderId));
-        order.setStatus(status);
-        order.setUpdatedAt(LocalDateTime.now());
-        orderRepository.save(order);
+                .orElseThrow(() ->
+                        new NotFoundException("Không tìm thấy đơn hàng id:" + orderId));
 
-        OrderStatusEntity history = new OrderStatusEntity();
-        history.setOrder(order);
-        history.setStatus(status);
+        String currentStatus = order.getStatus();
 
-         if(status.equals("CONFIRMED")) {
-             history.setNote("Người bán đã xác nhận đơn hàng");
-        } else if(status.equals("DELIVERING")) {
-             history.setNote("Đơn hàng đang được vận chuyển đến bạn");
-        } else if(status.equals("DELIVERED")) {
-             history.setNote("Đơn hàng đã được giao thành công");
-        } else if(status.equals("CANCELLED")) {
-             history.setNote("Đơn hàng đã được hủy");
+        if (!List.of("CONFIRMED", "DELIVERING", "DELIVERED", "CANCELLED").contains(status)) {
+            throw new BadRequestException("Trạng thái không hợp lệ");
         }
-        history.setCreatedAt(LocalDateTime.now());
-        orderStatusRepository.save(history);
 
-        UserEntity customer = order.getUser();
-        emailService.sendOrderStatusEmail(
-                customer.getEmail(),
-                customer.getFullName(),
-                order.getCode(),
-                status
-        );
+        if (status.equals("CONFIRMED")) {
+            if (!currentStatus.equals("PENDING")) {
+                throw new BadRequestException("Chỉ đơn hàng chờ xác nhận mới được xác nhận");
+            }
 
-        webSocketService.sendToTopic("/topic/orders/" + orderId, new OrderStatusEvent("ORDER_UPDATED_STATUS", orderId));
-        webSocketService.sendToTopic("/topic/orders", new OrderStatusEvent("ORDER_UPDATED_STATUS", orderId));
+            GhnCreateOrderResponse ghnResponse = ghnService.createOrder(order);
+
+            if (ghnResponse == null || ghnResponse.getData() == null) {
+                throw new BadRequestException("Không thể tạo vận đơn GHN");
+            }
+
+            order.setGhnOrderCode(ghnResponse.getData().getOrderCode());
+
+            if (ghnResponse.getData().getExpectedDeliveryTime() != null) {
+                OffsetDateTime odt = OffsetDateTime.parse(
+                        ghnResponse.getData().getExpectedDeliveryTime()
+                );
+                order.setExpectedDeliveryTime(odt.toLocalDateTime());
+            }
+
+            order.setStatus("CONFIRMED");
+            order.setShippingStatus("READY_TO_PICK");
+            order.setUpdatedAt(LocalDateTime.now());
+
+            orderRepository.save(order);
+
+            saveHistory(order, "CONFIRMED", "Shop đã xác nhận đơn hàng");
+            saveHistory(order, "READY_TO_PICK", "Đơn hàng đang chờ đơn vị vận chuyển lấy hàng");
+
+            sendOrderStatusEmail(order, "CONFIRMED");
+            sendOrderSocket(orderId);
+
+            return;
+        }
+
+        if (status.equals("DELIVERING")) {
+            if (!currentStatus.equals("CONFIRMED")) {
+                throw new BadRequestException("Chỉ đơn hàng đã xác nhận mới được chuyển sang đang giao");
+            }
+
+            order.setStatus("DELIVERING");
+            order.setUpdatedAt(LocalDateTime.now());
+
+            orderRepository.save(order);
+
+            saveHistory(order, "DELIVERING", "Đơn hàng đang được vận chuyển đến bạn");
+
+            sendOrderStatusEmail(order, "DELIVERING");
+            sendOrderSocket(orderId);
+
+            return;
+        }
+
+        if (status.equals("DELIVERED")) {
+            if (!currentStatus.equals("DELIVERING")) {
+                throw new BadRequestException("Chỉ đơn hàng đang giao mới được chuyển sang đã giao");
+            }
+
+            order.setStatus("DELIVERED");
+            order.setShippingStatus("DELIVERED");
+            order.setUpdatedAt(LocalDateTime.now());
+
+            if (order.getPaymentMethod().equals("COD")) {
+                order.setPaymentStatus("PAID");
+            }
+
+            orderRepository.save(order);
+
+            saveHistory(order, "DELIVERED", "Đơn hàng đã được giao thành công");
+
+            sendOrderStatusEmail(order, "DELIVERED");
+            sendOrderSocket(orderId);
+
+            return;
+        }
+
+        if (status.equals("CANCELLED")) {
+            if (!List.of("PENDING", "CONFIRMED").contains(currentStatus)) {
+                throw new BadRequestException("Đơn hàng hiện tại không thể hủy");
+            }
+
+            order.setStatus("CANCELLED");
+            order.setUpdatedAt(LocalDateTime.now());
+
+            if (order.getPaymentStatus().equals("PAID")) {
+                order.setPaymentStatus("REFUNDED");
+            }
+
+            if (order.getGhnOrderCode() != null) {
+                order.setShippingStatus("CANCEL");
+            }
+
+            restoreStock(order);
+
+            orderRepository.save(order);
+
+            saveHistory(order, "CANCELLED", "Đơn hàng đã được hủy");
+
+            sendOrderStatusEmail(order, "CANCELLED");
+            sendOrderSocket(orderId);
+
+            return;
+        }
     }
-
 
     private void validateRequest(OrderCreateRequest request) {
         if (request.getAddressId() == null) {
             throw new BadRequestException("Vui lòng chọn địa chỉ nhận hàng");
         }
 
-        if (request.getShippingMethod() == null || request.getShippingMethod().isBlank()) {
-            throw new BadRequestException("Vui lòng chọn phương thức vận chuyển");
-        }
+//        if (request.getShippingMethod() == null || request.getShippingMethod().isBlank()) {
+//            throw new BadRequestException("Vui lòng chọn phương thức vận chuyển");
+//        }
 
         if (request.getPaymentMethod() == null || request.getPaymentMethod().isBlank()) {
             throw new BadRequestException("Vui lòng chọn phương thức thanh toán");
@@ -544,23 +625,98 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
-    private BigDecimal getShippingFee(String shippingMethod) {
-        if ("fast".equalsIgnoreCase(shippingMethod)) {
-            return BigDecimal.valueOf(35000);
-        }
-
-        if ("economy".equalsIgnoreCase(shippingMethod)) {
-            return BigDecimal.valueOf(15000);
-        }
-
-        throw new BadRequestException("Phương thức vận chuyển không hợp lệ");
-    }
-
     private String generateCode(String s) {
         long now = System.currentTimeMillis();
         long last4 = now % 10000;
         if(s.equals("DH")) return String.format("DH%04d", last4);
         return String.format("HD%04d", last4);
+    }
+
+    private void saveHistory(
+            OrderEntity order,
+            String status,
+            String note
+    ) {
+        OrderStatusEntity history = new OrderStatusEntity();
+
+        history.setOrder(order);
+        history.setStatus(status);
+        history.setNote(note);
+        history.setCreatedAt(LocalDateTime.now());
+
+        orderStatusRepository.save(history);
+    }
+
+    private void restoreStock(OrderEntity order) {
+
+        List<OrderItemEntity> orderItems =
+                orderItemRepository.findByOrderId(order.getId());
+
+        for (OrderItemEntity item : orderItems) {
+
+            ProductVariantEntity variant = item.getVariant();
+
+            variant.setStock(
+                    variant.getStock() + item.getQuantity()
+            );
+
+            productVariantRepository.save(variant);
+
+            ProductEntity product = variant.getProduct();
+
+            product.setSoldCount(
+                    product.getSoldCount() - item.getQuantity()
+            );
+
+            productRepository.save(product);
+        }
+    }
+
+    private void sendOrderStatusEmail(OrderEntity order, String status) {
+        UserEntity customer = order.getUser();
+
+        emailService.sendOrderStatusEmail(
+                customer.getEmail(),
+                customer.getFullName(),
+                order.getCode(),
+                status
+        );
+    }
+
+    private void sendOrderSocket(Integer orderId) {
+        webSocketService.sendToTopic("/topic/orders/" + orderId, new OrderStatusEvent("ORDER_UPDATED_STATUS", orderId));
+        webSocketService.sendToTopic("/topic/orders", new OrderStatusEvent("ORDER_UPDATED_STATUS", orderId));
+    }
+
+    private String mapStatusTitle(String status) {
+        return switch (status) {
+            case "PENDING" ->
+                    "Đã đặt hàng";
+            case "CONFIRMED" ->
+                    "Đã xác nhận";
+            case "READY_TO_PICK" ->
+                    "Chờ lấy hàng";
+            case "PICKING" ->
+                    "Đang lấy hàng";
+            case "PICKED" ->
+                    "Đã lấy hàng";
+            case "TRANSPORTING" ->
+                    "Đang trung chuyển";
+            case "DELIVERING" ->
+                    "Đang giao hàng";
+            case "DELIVERED" ->
+                    "Đã giao thành công";
+            case "COMPLETED" ->
+                    "Hoàn tất";
+            case "RETURNING" ->
+                    "Đang hoàn hàng";
+            case "RETURNED" ->
+                    "Đã hoàn hàng";
+            case "CANCELLED" ->
+                    "Đã hủy";
+            default ->
+                    "Cập nhật đơn hàng";
+        };
     }
 
 }

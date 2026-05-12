@@ -53,8 +53,19 @@ public class ProductEntity {
 
     private String description;
 
-//    @Type(JsonType.class)
-@JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "weight")
+    private Integer weight;
+
+    @Column(name = "width")
+    private Integer width;
+
+    @Column(name = "height")
+    private Integer height;
+
+    @Column(name = "length")
+    private Integer length;
+
+    @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "attributes_json", columnDefinition = "json")
     private Map<String, Object> attributesJson;
 

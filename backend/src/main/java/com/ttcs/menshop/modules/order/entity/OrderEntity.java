@@ -28,9 +28,18 @@ public class OrderEntity {
     private String receiverName;
     private String receiverPhone;
     private String address;
+    private Integer receiverDistrictId;
+    private String receiverWardCode;
     private BigDecimal totalPrice;
     private BigDecimal shippingFee;
     private BigDecimal finalTotal;
+    private Integer shippingServiceId;
+    private String shippingServiceName;
+    private String ghnOrderCode;
+    private String shippingStatus;
+    private LocalDateTime expectedDeliveryTime;
+    private LocalDateTime shippedAt;
+    private LocalDateTime deliveredAt;
     private String paymentMethod;
     private String paymentStatus;
     private String status;

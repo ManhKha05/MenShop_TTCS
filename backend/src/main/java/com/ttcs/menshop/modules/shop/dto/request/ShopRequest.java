@@ -12,4 +12,8 @@ public class ShopRequest {
     private String phone;
     private String email;
     private String address;
+    private String detailAddress;
+    private String wardId;
+    private Integer districtId;
+    private Integer provinceId;
 }
