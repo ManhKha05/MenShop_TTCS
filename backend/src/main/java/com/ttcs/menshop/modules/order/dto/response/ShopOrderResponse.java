@@ -21,4 +21,5 @@ public class ShopOrderResponse {
     private String paymentMethod;
     private String paymentStatus;
     private BigDecimal finalPrice;
+    private String shopName;
 }

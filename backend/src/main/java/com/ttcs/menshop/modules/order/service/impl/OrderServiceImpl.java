@@ -482,11 +482,11 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Page<ShopOrderResponse> getShopOrders(int page, int size, String code, String status, String shippingStatus, String paymentMethod, LocalDateTime fromDate, LocalDateTime toDate) {
+    public Page<ShopOrderResponse> getOrders(int page, int size, String code, String status, String shippingStatus, String paymentMethod, LocalDateTime fromDate, LocalDateTime toDate) {
         UserEntity user = authService.getCurrentUser();
 
         Pageable pageable = PageRequest.of(page, size);
-        return orderRepository.findShopOrders(user.getShop().getId(), code, status, shippingStatus, paymentMethod, fromDate, toDate, pageable);
+        return orderRepository.findOrders(user.getShop().getId(), code, status, shippingStatus, paymentMethod, fromDate, toDate, pageable);
     }
 
     @Transactional

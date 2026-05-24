@@ -14,7 +14,7 @@ public interface OrderService {
     void cancelOrder(Integer id);
     List<OrderHistoryResponse> getMyOrders(String status, String keyword);
     OrderStatsResponse getOrderStats(Integer shopId);
-    Page<ShopOrderResponse> getShopOrders(
+    Page<ShopOrderResponse> getOrders(
             int page,
             int size,
             String code,

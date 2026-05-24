@@ -44,7 +44,7 @@ public interface OrderRepository extends JpaRepository<OrderEntity, Integer> {
             sum(case when o.status = 'CANCELLED' then 1 else 0 end)
         )
         from OrderEntity o
-        where o.shop.id = :shopId
+        where :shopId is null or o.shop.id = :shopId
     """)
     OrderStatsResponse getOrderStats(Integer shopId);
 
@@ -59,10 +59,11 @@ public interface OrderRepository extends JpaRepository<OrderEntity, Integer> {
             o.shippingStatus,
             o.paymentMethod,
             o.status,
-            o.finalTotal
+            o.finalTotal,
+            o.shop.name
         )
         from OrderEntity o
-        where o.shop.id = :shopId
+        where (:shopId is null or o.shop.id = :shopId)
           and (:code is null or lower(o.code) like lower(concat('%', :code, '%')))
           and (:status is null or :status = 'ALL' or o.status = :status)
           and (:shippingStatus is null or :shippingStatus = 'ALL' or o.shippingStatus = :shippingStatus)
@@ -71,7 +72,7 @@ public interface OrderRepository extends JpaRepository<OrderEntity, Integer> {
           and (:toDate is null or o.createdAt <= :toDate)
         order by o.createdAt desc
     """)
-    Page<ShopOrderResponse> findShopOrders(
+    Page<ShopOrderResponse> findOrders(
             @Param("shopId") Integer shopId,
             @Param("code") String code,
             @Param("status") String status,

@@ -37,7 +37,7 @@ public class ShopOrderController {
             @RequestParam(required = false) LocalDateTime fromDate,
             @RequestParam(required = false) LocalDateTime toDate
     ) {
-        return ResponseEntity.ok(orderService.getShopOrders(page, size, code, status, shippingStatus, paymentMethod, fromDate, toDate));
+        return ResponseEntity.ok(orderService.getOrders(page, size, code, status, shippingStatus, paymentMethod, fromDate, toDate));
     }
 
     @GetMapping("/shop/orders/{id}")
