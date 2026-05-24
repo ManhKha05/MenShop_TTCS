@@ -12,13 +12,18 @@ import { Link } from "react-router-dom";
 import { formatDateTime } from "../../utils/date"
 import { patch } from "../../utils/request";
 
-function OrderTable({ orders = [], page = 1, pageSize = 10, total = 0, onChangePage, onReload }) {
+function OrderTable({ orders = [], page = 1, pageSize = 10, total = 0, onChangePage, onReload, role }) {
 
   const columns = [
     {
       title: "Mã đơn",
       dataIndex: "orderCode",
       key: "orderCode",
+    },
+    role === "ADMIN" && {
+      title: "Cửa hàng",
+      dataIndex: "shopName",
+      key: "shopName",
     },
     {
       title: "Khách hàng",
@@ -83,46 +88,62 @@ function OrderTable({ orders = [], page = 1, pageSize = 10, total = 0, onChangeP
       title: "Thao tác",
       key: "actions",
       render: (record) => (
-        <Space>
-          <Link to={`/shop/orders/${record.id}`} >
-            <Button type="link" icon={<EyeOutlined />}>
-              Xem
-            </Button>
-          </Link>
+        role === "ADMIN" ? (
+          <Space>
+            <Link to={`/admin/orders/${record.id}`} >
+              <Button type="link" icon={<EyeOutlined />}>
+                Xem
+              </Button>
+            </Link>
+          </Space>
+        ) : (
 
-          {record.status === "PENDING" && (
-            <Button
-              type="primary"
-              icon={<CheckOutlined />}
-              onClick={() => handleAction(record, "confirm")}
-            >
-              Xác nhận
-            </Button>
-          )}
+          < Space >
+            <Link to={`/shop/orders/${record.id}`} >
+              <Button type="link" icon={<EyeOutlined />}>
+                Xem
+              </Button>
+            </Link>
 
-          {record.status === "CONFIRMED" && (
-            <Button
-              color="blue"
-              variant="outlined"
-              icon={<CarOutlined />}
-              onClick={() => handleAction(record, "delivering")}
-            >
-              Giao hàng
-            </Button>
-          )}
+            {
+              record.status === "PENDING" && (
+                <Button
+                  type="primary"
+                  icon={<CheckOutlined />}
+                  onClick={() => handleAction(record, "confirm")}
+                >
+                  Xác nhận
+                </Button>
+              )
+            }
 
-          {record.status === "DELIVERING" && (
-            <Button
-              color="green"
-              variant="solid"
-              icon={<CheckCircleOutlined />}
-              onClick={() => handleAction(record, "delivered")}
-            >
-              Đã giao
-            </Button>
-          )}
+            {
+              record.status === "CONFIRMED" && (
+                <Button
+                  color="blue"
+                  variant="outlined"
+                  icon={<CarOutlined />}
+                  onClick={() => handleAction(record, "delivering")}
+                >
+                  Giao hàng
+                </Button>
+              )
+            }
 
-          {/* {record.status === "DELIVERED" && (
+            {
+              record.status === "DELIVERING" && (
+                <Button
+                  color="green"
+                  variant="solid"
+                  icon={<CheckCircleOutlined />}
+                  onClick={() => handleAction(record, "delivered")}
+                >
+                  Đã giao
+                </Button>
+              )
+            }
+
+            {/* {record.status === "DELIVERED" && (
             <Button
               color="green"
               variant="outlined"
@@ -133,25 +154,26 @@ function OrderTable({ orders = [], page = 1, pageSize = 10, total = 0, onChangeP
             </Button>
           )} */}
 
-          {(
-            record.status === "PENDING" ||
-            (
-              record.status === "CONFIRMED" &&
-              (!record.shippingStatus || record.shippingStatus === "READY_TO_PICK")
-            )
-          ) && (
-              <Button
-                danger
-                icon={<CloseOutlined />}
-                onClick={() => handleAction(record, "cancel")}
-              >
-                Hủy
-              </Button>
-            )}
-        </Space>
+            {(
+              record.status === "PENDING" ||
+              (
+                record.status === "CONFIRMED" &&
+                (!record.shippingStatus || record.shippingStatus === "READY_TO_PICK")
+              )
+            ) && (
+                <Button
+                  danger
+                  icon={<CloseOutlined />}
+                  onClick={() => handleAction(record, "cancel")}
+                >
+                  Hủy
+                </Button>
+              )}
+          </ Space>
+        )
       )
     },
-  ];
+  ].filter(Boolean);;
 
   const handleAction = (record, action) => {
     let title = "";

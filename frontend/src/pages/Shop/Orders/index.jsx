@@ -285,6 +285,7 @@ function Orders() {
               fetchOrders();
               fetchStats();
             }}
+            role="SHOP"
           />
         </div>
       </div>

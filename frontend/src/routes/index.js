@@ -50,6 +50,7 @@ import OAuth2Success from "../pages/User/OAuth2Success"
 import ShopReview from "../pages/Shop/Review"
 import ShopRevenue from "../pages/Shop/Revenue"
 import Category from "../pages/User/Category"
+import OrderDetailAdmin from "../pages/Admin/OrderDetail";
 
 export const routes = [
   {
@@ -178,7 +179,8 @@ export const routes = [
           { path: "orders", element: <Orders /> },
           { path: "flash-sale", element: <FlashSale /> },
           { path: "flash-sale/:id", element: <FlashSaleDetail /> },
-          { path: "banners", element: <Banners /> }
+          { path: "banners", element: <Banners /> },
+          { path: "orders/:id", element: <OrderDetailAdmin /> },
         ]
       }
     ]

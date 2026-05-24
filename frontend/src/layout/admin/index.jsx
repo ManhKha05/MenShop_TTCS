@@ -54,7 +54,14 @@ function LayoutAdmin() {
       title = "Quản lí Banner"
       break
 
+    case "orders":
+      title = "Quản lí đơn hàng"
+      break
+  
   }
+
+  if(location.substring(7).startsWith("products")) title = "Quản lí sản phẩm"
+  if(location.substring(7).startsWith("orders")) title = "Quản lí đơn hàng"
 
   const items = [
     {
@@ -82,11 +89,11 @@ function LayoutAdmin() {
       label: <Link to='/admin/users'>Người dùng</Link>,
       icon: <FaUsersGear />
     },
-    // {
-    //   key: 'orders',
-    //   label: <Link to='/admin/orders'>Đơn hàng</Link>,
-    //   icon: <FaShoppingCart />
-    // },
+    {
+      key: 'orders',
+      label: <Link to='/admin/orders'>Đơn hàng</Link>,
+      icon: <FaShoppingCart />
+    },
     {
       key: 'flash-sale',
       label: <Link to='/admin/flash-sale'>Flash Sale</Link>,
@@ -104,6 +111,7 @@ function LayoutAdmin() {
     if (pathname.startsWith("/admin/shops")) return "shops";
     if (pathname.startsWith("/admin/categories")) return "categories";
     if (pathname.startsWith("/admin/products")) return "products";
+    if (pathname.startsWith("/admin/orders")) return "orders";
     if (pathname.startsWith("/admin/users")) return "users";
     if (pathname.startsWith("/admin/flash-sale")) return "flash-sale";
     if (pathname.startsWith("/admin/banners")) return "banners";
